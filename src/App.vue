@@ -1,26 +1,82 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <the-header></the-header>
+
+  <article>
+    <router-view v-slot="{ Component }">
+      <transition name="router" mode="out-in">
+        <component :is="Component"></component>
+      </transition>
+    </router-view>
+  </article>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import "./assets/css/bootstrap.rtl.min.css";
+import "./assets/css/styles.css";
+import "./assets/css/font-awesome.css";
+import TheHeader from "./components/header/TheHeader.vue";
+import { useStore } from "vuex";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    TheHeader,
+  },
+  setup() {
+    const store = useStore();
+    store.dispatch("auth/tryLogin");
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Vazir, sans-serif;
+}
+
+body {
+  margin: 0;
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+article {
+  padding: 0 7rem;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.router-enter-from {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+.router-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+.router-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.router-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.router-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+.router-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
 }
 </style>
