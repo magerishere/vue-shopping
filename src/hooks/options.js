@@ -4,6 +4,7 @@ export default function formOptions() {
     formIsValid: true,
     isLoading: false,
     errors: null,
+    done: null,
   });
 
   return options;

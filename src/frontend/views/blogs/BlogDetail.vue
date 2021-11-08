@@ -15,6 +15,7 @@
         :title="blog.title"
         :image="blog.image"
         :content="blog.content"
+        :comments="blog.comments"
       ></blog-detail-item>
     </section>
   </div>

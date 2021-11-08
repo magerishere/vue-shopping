@@ -17,8 +17,10 @@ async function submitForm(data = null, dispatch, options) {
   }
   try {
     await store.dispatch(dispatch, formData);
+    options.done = true;
   } catch (err) {
     options.errors = err.message.split(",");
+    options.done = false;
   }
 
   options.isLoading = false;

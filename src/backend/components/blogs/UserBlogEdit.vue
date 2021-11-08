@@ -27,7 +27,9 @@
         </div>
       </div>
       <div class="mb-3">
-        <label for="image" class="form-label">عکس</label>
+        <label for="image" class="form-label"
+          >عکس <small>(حداکثر 1 مگابایت)</small>
+        </label>
         <input
           class="form-control form-control-sm"
           :class="{ error: !inputs.image.isValid }"
@@ -148,25 +150,6 @@ export default {
 </script>
 
 <style scoped>
-.form-control {
-  border-color: rgba(0, 0, 0, 0.3);
-  direction: rtl;
-}
-.form-control:focus {
-  border-color: darkviolet;
-  box-shadow: 0 0 0 0.25rem rgba(148, 0, 211, 0.4);
-}
-
-.error {
-  border-color: red;
-}
-
-.form-text-error {
-  margin-top: 0.25 rem;
-  font-size: 0.875em;
-  color: red;
-}
-
 .actions {
   text-align: center;
 }

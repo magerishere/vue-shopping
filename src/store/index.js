@@ -1,13 +1,14 @@
 import { createStore } from "vuex";
 import authModule from "./auth/index";
-import blogModule from "./blogs/index";
+import blogModule from "./blog/index";
 import userModule from "./user/index";
-
+import commentModule from "./comment/index";
 const store = createStore({
   modules: {
     auth: authModule,
     blog: blogModule,
     user: userModule,
+    comment: commentModule,
   },
   actions: {
     errorsHandler(_, payload) {

@@ -20,6 +20,7 @@ const router = createRouter({
     },
     {
       path: "/auth",
+      redirect: { name: "login" },
       component: () => import("./frontend/views/auth/UserAuth.vue"),
       name: "auth",
       children: [

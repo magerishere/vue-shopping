@@ -55,7 +55,7 @@ export default {
       return this.$store.getters["blog/hasUserBlogs"];
     },
     blogCreateLink() {
-      return this.$route.path + "/create";
+      return { name: "blogCreate" };
     },
   },
   async created() {

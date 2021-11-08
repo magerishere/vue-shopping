@@ -92,25 +92,6 @@ export default {
 </script>
 
 <style scoped>
-.form-control {
-  border-color: rgba(0, 0, 0, 0.3);
-  direction: rtl;
-}
-.form-control:focus {
-  border-color: darkviolet;
-  box-shadow: 0 0 0 0.25rem rgba(148, 0, 211, 0.4);
-}
-
-.error {
-  border-color: red;
-}
-
-.form-text-error {
-  margin-top: 0.25 rem;
-  font-size: 0.875em;
-  color: red;
-}
-
 .actions {
   text-align: center;
 }

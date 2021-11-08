@@ -1,11 +1,11 @@
 <template>
   <li class="col-md-4">
     <base-card>
-      <img :src="image" class="card-img-top" alt="image top" />
+      <img :src="image" class="card-img-top" alt="image top" loading="lazy" />
       <div class="card-body">
         <h5 class="card-title">{{ title }}</h5>
         <p class="card-text">
-          {{ content }}
+          {{ StringFormat(content, 100) }}
         </p>
         <div class="float-end">
           <base-button link :to="readMoreLink" mode="small"
@@ -20,6 +20,13 @@
 <script>
 export default {
   name: "BlogItem",
+  inject: {
+    StringFormat: {
+      // helper function
+      type: Function,
+      required: true,
+    },
+  },
   props: {
     id: {
       type: Number,

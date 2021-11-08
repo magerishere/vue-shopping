@@ -24,7 +24,7 @@
     </section>
     <div class="text-center mt-5" v-if="!hasBlogs && !options.isLoading">
       <h4 class="mb-5">هیچ مطلبی وجود ندارد. شما اولین پست را ایجاد کنید</h4>
-      <base-button v-if="isAuth" link to="/dashobard/blog/create"
+      <base-button v-if="isAuth" link to="/dashboard/blog/create"
         >ایجاد مطلب</base-button
       >
       <base-button v-else link to="/auth">ورود / ثبت نام</base-button>
@@ -46,6 +46,7 @@ export default {
     BlogItem,
     BlogsSidebar,
   },
+
   setup() {
     const store = useStore();
     const options = useOptions();
@@ -61,7 +62,7 @@ export default {
     });
 
     const isAuth = computed(() => {
-      return store.getters["user/isAuth"];
+      return store.getters["auth/isAuth"];
     });
     const { confirmErrors } = useErrors(null, options);
     return { blogs, hasBlogs, confirmErrors, options, isAuth };

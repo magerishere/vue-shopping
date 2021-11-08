@@ -9,16 +9,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    mode: {
-      type: String,
-      required: false,
-    },
-  },
-};
-</script>
 <style scoped>
 .sk-chase {
   width: 40px;

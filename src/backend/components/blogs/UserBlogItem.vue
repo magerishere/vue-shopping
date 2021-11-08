@@ -2,14 +2,23 @@
   <tr>
     <td>{{ id }}</td>
     <td>{{ title }}</td>
-    <td><img :src="image" alt="Blog Image" /></td>
-    <td>{{ content }}</td>
-    <td><base-button link :to="editBlogLink">مشاهده</base-button></td>
+    <td><img :src="image" alt="Blog Image" loading="lazy" /></td>
+    <td>{{ StringFormat(content, 70) }}</td>
+    <td>
+      <base-button link :to="editBlogLink" mode="small">مشاهده</base-button>
+    </td>
   </tr>
 </template>
 
 <script>
 export default {
+  inject: {
+    StringFormat: {
+      // helper function
+      type: Function,
+      required: true,
+    },
+  },
   props: {
     id: {
       type: Number,
