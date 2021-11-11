@@ -1,5 +1,8 @@
 <template>
   <base-card>
+    <base-dialog :show="!!options.errors" @close="confirmErrors">
+      <p v-for="error in options.errors" :key="error">{{ error }}</p>
+    </base-dialog>
     <header class="text-center">
       <h3>{{ title }}</h3>
     </header>
@@ -12,23 +15,23 @@
         {{ content }}
       </p>
       <div>
-        <p>
-          <span>
-            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-            <small>19</small>
+        <div class="actions">
+          <span @click="like" class="like">
+            <i :class="likeIconClass" aria-hidden="true"></i>
+            <small>{{ likesCount }}</small>
           </span>
-          <span>
-            <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
-            <small>19</small>
+          <span @click="dislike" class="dislike">
+            <i :class="dislikeIconClass" aria-hidden="true"></i>
+            <small>{{ dislikesCount }}</small>
           </span>
-        </p>
+        </div>
       </div>
       <hr />
       <h6>نظرات</h6>
-      <blog-comments-list :comments="comments"></blog-comments-list>
+      <comments-list :comments="comments"></comments-list>
       <h6>نظر شما درباره این مطلب چیست؟</h6>
 
-      <blog-comment-create v-if="isAuth" :blogId="id"></blog-comment-create>
+      <comment-create v-if="isAuth" :blogId="id"></comment-create>
 
       <h6 v-else class="text-center">
         برای نظردادن ابتدا وارد اکانت خود شوید
@@ -40,12 +43,14 @@
 </template>
 
 <script>
-import BlogCommentsList from "./comments/BlogCommentsList.vue";
-import BlogCommentCreate from "./comments/BlogCommentCreate.vue";
+import CommentsList from "../comments/CommentsList.vue";
+import CommentCreate from "../comments/CommentCreate.vue";
+import useLikes from "@/hooks/likes";
+import useErrors from "@/hooks/errors";
 export default {
   components: {
-    BlogCommentsList,
-    BlogCommentCreate,
+    CommentsList,
+    CommentCreate,
   },
   props: {
     id: {
@@ -68,6 +73,46 @@ export default {
       type: Array,
       required: true,
     },
+    likes: {
+      type: Array,
+      required: true,
+    },
+    dislikes: {
+      type: Array,
+      required: true,
+    },
+  },
+  setup(props) {
+    const data = {
+      blogId: {
+        val: props.id,
+      },
+    };
+    const {
+      likesCount,
+      isLike,
+      like,
+      likeIconClass,
+      dislikesCount,
+      isDislike,
+      dislike,
+      dislikeIconClass,
+      options,
+    } = useLikes(props, data, "blog/likeBlog", "blog/dislikeBlog");
+
+    const { confirmErrors } = useErrors(null, options);
+    return {
+      likesCount,
+      isLike,
+      like,
+      likeIconClass,
+      dislikesCount,
+      isDislike,
+      dislike,
+      dislikeIconClass,
+      options,
+      confirmErrors,
+    };
   },
   computed: {
     isAuth() {
@@ -81,5 +126,15 @@ export default {
 .blog-image {
   width: 80%;
   height: 250px;
+}
+.actions > * {
+  margin: 0 0.3rem;
+}
+.like {
+  cursor: pointer;
+}
+
+.dislike {
+  cursor: pointer;
 }
 </style>

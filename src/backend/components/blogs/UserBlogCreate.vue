@@ -12,6 +12,18 @@
     </base-dialog>
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div class="mb-3">
+        <label for="catName" class="form-label">دسته بندی</label>
+        <select id="catName" class="form-select" v-model="inputs.catName.val">
+          <option
+            v-for="catName in BASIC_DATA.catNames"
+            :key="catName"
+            :value="catName"
+          >
+            {{ catName }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-3">
         <label for="title" class="form-label">عنوان</label>
         <input
           type="text"
@@ -25,6 +37,7 @@
           عنوان مطلب را وارد کنید
         </div>
       </div>
+
       <div class="mb-3">
         <label for="image" class="form-label"
           >عکس <small>(حداکثر 1 مگابایت)</small></label
@@ -68,10 +81,22 @@ import { reactive } from "vue";
 import useForm from "@/hooks/form";
 import useOptions from "@/hooks/options";
 import useErrors from "@/hooks/errors";
-
 export default {
+  inject: {
+    BASIC_DATA: {
+      type: JSON,
+      required: true,
+    },
+  },
   setup() {
     const inputs = reactive({
+      catName: {
+        val: "",
+        isValid: true,
+        validate: {
+          required: true,
+        },
+      },
       title: {
         val: "",
         isValid: true,

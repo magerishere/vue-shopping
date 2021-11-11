@@ -1,6 +1,9 @@
 <template>
   <div class="row">
-    <base-spinner v-if="options.isLoading"></base-spinner>
+    <blogs-sidebar
+      @set-filters="setFilters"
+      @set-order="setOrder"
+    ></blogs-sidebar>
     <base-dialog
       :show="!!options.errors"
       title="خطایی رخ داد"
@@ -8,7 +11,8 @@
     >
       <p v-for="error in options.errors" :key="error">{{ error }}</p>
     </base-dialog>
-    <blogs-sidebar v-if="hasBlogs && !options.isLoading"></blogs-sidebar>
+    <base-spinner v-if="options.isLoading"></base-spinner>
+
     <section class="col-md-9">
       <ul class="row" v-if="hasBlogs && !options.isLoading">
         <blog-item
@@ -18,6 +22,9 @@
           :title="blog.title"
           :image="blog.image"
           :content="blog.content"
+          :views="blog.views"
+          :likes="blog.likes_count"
+          :comments="blog.comments_count"
         >
         </blog-item>
       </ul>
@@ -46,10 +53,16 @@ export default {
     BlogItem,
     BlogsSidebar,
   },
-
+  emits: {
+    setFilters: {
+      type: Function,
+      required: true,
+    },
+  },
   setup() {
     const store = useStore();
     const options = useOptions();
+
     onMounted(async () => {
       await useForm(null, "blog/getBlogs", options);
     });
@@ -64,8 +77,27 @@ export default {
     const isAuth = computed(() => {
       return store.getters["auth/isAuth"];
     });
+
+    // emits
+    async function setFilters(arrFilters) {
+      const filtersData = {
+        filters: {
+          val: arrFilters,
+        },
+      };
+      await useForm(filtersData, "blog/setFilters", options);
+    }
+    async function setOrder(orderByCriteria) {
+      const orderData = {
+        orderBy: {
+          val: orderByCriteria,
+        },
+      };
+      await useForm(orderData, "blog/setOrder", options);
+    }
+
     const { confirmErrors } = useErrors(null, options);
-    return { blogs, hasBlogs, confirmErrors, options, isAuth };
+    return { blogs, hasBlogs, confirmErrors, options, isAuth, setOrder };
   },
 };
 </script>

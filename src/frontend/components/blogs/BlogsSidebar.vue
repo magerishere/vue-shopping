@@ -10,17 +10,16 @@
             <h5 class="filter-title">دسته بندی</h5>
 
             <ul class="nested-list">
-              <li>
-                <label for="max"
-                  ><input type="checkbox" id="max" />
+              <li v-for="catName in BASIC_DATA.catNames" :key="catName">
+                <label :for="catName"
+                  ><input
+                    type="checkbox"
+                    :id="catName"
+                    name="catName"
+                    @change="setFilters"
+                  />
                   <span class="checkmark"></span>
-                  بیشترین
-                </label>
-              </li>
-              <li>
-                <label for="min"
-                  ><input type="checkbox" id="min" />
-                  <span class="checkmark"></span>کمترین
+                  {{ catName }}
                 </label>
               </li>
             </ul>
@@ -31,16 +30,27 @@
             <h4 class="filter-title">ترتییب</h4>
             <ul class="nested-list">
               <li>
-                <label for="new"
-                  ><input type="checkbox" id="new" />
-                  <span class="checkmark"></span>
+                <label for="desc"
+                  ><input
+                    type="radio"
+                    id="desc"
+                    name="radio"
+                    checked
+                    @change="setOrder"
+                  />
+                  <span class="radio"></span>
                   جدیدترین
                 </label>
               </li>
               <li>
-                <label for="old"
-                  ><input type="checkbox" id="old" />
-                  <span class="checkmark"></span>قدیمی ترین
+                <label for="asc"
+                  ><input
+                    type="radio"
+                    id="asc"
+                    name="radio"
+                    @change="setOrder"
+                  />
+                  <span class="radio"></span>قدیمی ترین
                 </label>
               </li>
             </ul>
@@ -52,8 +62,44 @@
 </template>
 
 <script>
+import { ref } from "vue";
 export default {
+  inject: {
+    BASIC_DATA: {
+      type: JSON,
+      required: true,
+    },
+  },
   name: "BlogsSidebar",
+  setup(_, context) {
+    const filters = ref([]);
+    function setFilters(event) {
+      const isChecked = event.target.checked;
+
+      const filterValue = event.target.id;
+      if (isChecked) {
+        filters.value["catName"] = filterValue;
+        // filters.value.push({[filterKey]:filterValue});
+      } else {
+        const arrFilters = filters.value.slice();
+        const filterIndex = arrFilters.findIndex(
+          (filter) => filter === filterValue
+        );
+        arrFilters.splice(filterIndex, 1);
+        filters.value = arrFilters;
+      }
+      console.log(filters.value);
+
+      // context.emit('set-filters',filters.value)
+    }
+    function setOrder(event) {
+      const orderByValue = event.target.id;
+      filters.value["orderBy"] = orderByValue;
+      console.log(filters.value);
+      context.emit("set-order", orderByValue);
+    }
+    return { setFilters, setOrder };
+  },
 };
 </script>
 
@@ -109,6 +155,43 @@ nav {
 }
 
 .nested-list li label input[type="checkbox"]:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* radio */
+.nested-list li label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radio {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  top: 4px;
+  right: 0;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.radio:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: -7px;
+  width: 10px;
+  height: 19px;
+  border: solid darkviolet;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.nested-list li label input[type="radio"]:checked ~ .radio:after {
   display: block;
 }
 

@@ -1,5 +1,14 @@
 <template>
   <div class="row">
+    <base-dialog :show="options.isLoading" fixed>
+      <base-spinner></base-spinner>
+    </base-dialog>
+    <base-dialog
+      :show="!!options.errors"
+      :messages="options.errors"
+      @close="confirmErrors"
+    >
+    </base-dialog>
     <user-dashboard-sidebar></user-dashboard-sidebar>
     <section class="col-md-9">
       <base-card>
@@ -24,6 +33,9 @@
 import { computed } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
+import useForm from "@/hooks/form";
+import useOptions from "@/hooks/options";
+import useErrors from "@/hooks/errors";
 import UserDashboardSidebar from "../../components/dashboard/UserDashboardSidebar.vue";
 export default {
   name: "UserDashboard",
@@ -36,14 +48,9 @@ export default {
     const isAuth = computed(function () {
       return store.getters["auth/isAuth"];
     });
-
-    async function logout() {
-      try {
-        await store.dispatch("auth/logout");
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    const options = useOptions();
+    const logout = () => useForm(null, "auth/logout", options);
+    const { confirmErrors } = useErrors(null, options);
 
     const cardTitle = computed(function () {
       return route.meta.title;
@@ -52,6 +59,8 @@ export default {
       isAuth,
       logout,
       cardTitle,
+      options,
+      confirmErrors,
     };
   },
 };

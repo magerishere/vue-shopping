@@ -5,6 +5,8 @@ import App from "./App.vue";
 import BaseCard from "./components/ui/BaseCard.vue";
 import BaseButton from "./components/ui/BaseButton.vue";
 import StringFormat from "./helpers/StringFormat";
+import BasicData from "./basic-data.json";
+
 const BaseDialog = defineAsyncComponent(() =>
   import("./components/ui/BaseDialog.vue")
 );
@@ -24,5 +26,6 @@ app.component("base-dialog", BaseDialog);
 app.component("base-spinner", BaseSpinner);
 
 app.provide("StringFormat", StringFormat);
+app.provide("BASIC_DATA", BasicData);
 
 app.mount("#app");

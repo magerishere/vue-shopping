@@ -7,6 +7,10 @@
     <blog-detail-sidebar
       v-if="hasBlog && !options.isLoading"
       :user="blog.user"
+      :views="blog.views"
+      :commentsCount="blog.comments.length"
+      :likesCount="blog.likes.length"
+      :dislikesCount="blog.dislikes.length"
     ></blog-detail-sidebar>
     <section class="col-md-9">
       <blog-detail-item
@@ -14,6 +18,8 @@
         :id="blog.id"
         :title="blog.title"
         :image="blog.image"
+        :likes="blog.likes"
+        :dislikes="blog.dislikes"
         :content="blog.content"
         :comments="blog.comments"
       ></blog-detail-item>

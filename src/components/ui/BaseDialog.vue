@@ -1,13 +1,17 @@
 <template>
   <teleport to="body">
-    <div v-if="show" @click="close"></div>
+    <div v-if="show" @click="close" class="backdrop"></div>
     <transition name="dialog">
       <dialog open v-if="show">
         <header>
           <h1>{{ title }}</h1>
         </header>
         <section>
-          <slot></slot>
+          <slot>
+            <div v-if="messages">
+              <p v-for="message in messages" :key="message">{{ message }}</p>
+            </div>
+          </slot>
         </section>
         <menu class="actions" v-if="!fixed">
           <slot name="actions">
@@ -42,6 +46,11 @@ export default {
       required: false,
       default: "در حال انجام ...",
     },
+    messages: {
+      type: Array,
+      required: false,
+      default: null,
+    },
   },
   setup(props, context) {
     function close() {
@@ -57,7 +66,7 @@ export default {
 </script>
 
 <style scoped>
-div {
+.backdrop {
   position: fixed;
   width: 100%;
   height: 100%;

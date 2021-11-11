@@ -42,10 +42,6 @@ export default {
     context.commit("setUser", userData);
   },
   async logout(context) {
-    // data
-    const token = localStorage.getItem("token");
-    // header config
-    Api.defaults.headers.post["Authorization"] = "Bearer " + token;
     // send Http request
     const response = await Api.post("/logout");
     const responseData = response.data;

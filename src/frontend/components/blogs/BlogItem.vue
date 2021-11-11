@@ -7,6 +7,11 @@
         <p class="card-text">
           {{ StringFormat(content, 100) }}
         </p>
+        <div class="float-start">
+          <span><i class="fa fa-eye"></i>{{ views }}</span>
+          <span><i class="fa fa-thumbs-up"></i>{{ likes }}</span>
+          <span><i class="fa fa-comments"></i>{{ comments }}</span>
+        </div>
         <div class="float-end">
           <base-button link :to="readMoreLink" mode="small"
             >ادامه مطلب</base-button
@@ -44,6 +49,18 @@ export default {
       type: String,
       required: true,
     },
+    views: {
+      type: Number,
+      required: true,
+    },
+    likes: {
+      type: Number,
+      required: true,
+    },
+    comments: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     readMoreLink() {
@@ -59,5 +76,8 @@ li .card {
 }
 .card-text {
   min-height: 50px;
+}
+.float-start > * {
+  margin-left: 0.25rem;
 }
 </style>

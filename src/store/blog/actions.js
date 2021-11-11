@@ -3,10 +3,8 @@ import router from "@/router";
 export default {
   async addBlog(context, payload) {
     const blogData = payload;
-    const token = localStorage.getItem("token");
-    Api.defaults.headers.post["Authorization"] = "Bearer " + token;
+    console.log(blogData.get("catName"));
     const response = await Api.post("/blog", blogData);
-
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
 
@@ -17,10 +15,7 @@ export default {
   async editBlog(context, payload) {
     const blogData = payload;
     blogData.append("_method", "patch");
-    const token = localStorage.getItem("token");
-    Api.defaults.headers.post["Authorization"] = "Bearer " + token;
     const response = await Api.post(`/blog/${blogData.get("id")}`, blogData);
-    console.log(response);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
     router.replace({ name: "userBlogs" });
@@ -38,23 +33,39 @@ export default {
     context.dispatch("errorsHandler", responseData, { root: true });
     context.commit("setBlog", responseData);
   },
+  async setOrder(context, payload) {
+    const orderData = payload;
+    const response = await Api.post("/blogs", orderData);
+    const responseData = response.data;
+    context.dispatch("errorsHandler", responseData, { root: true });
+    context.commit("setBlogs", responseData);
+  },
+  async setFilters(context,payload) {
+    const filtersData = payload;
+    const response = await Api.post('/blogs',filtersData);
+  }
   async getUserBlogs(context) {
-    const token = localStorage.getItem("token");
-    Api.defaults.headers.get["Authorization"] = "Bearer " + token;
-
     const response = await Api.get("/blogs/user");
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
     context.commit("setUserBlogs", responseData);
   },
   async getUserBlog(context, payload) {
-    const token = localStorage.getItem("token");
     const blogId = payload.get("id");
-    Api.defaults.headers.get["Authorization"] = "Bearer " + token;
 
     const response = await Api.get(`/blog/user/${blogId}/edit`);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
     context.commit("setUserBlog", responseData);
+  },
+  async likeBlog(context, payload) {
+    const blogId = payload.get("blogId");
+    const url = `/blog/${blogId}/like`;
+    return context.dispatch("likesAndDislikes", url, { root: true });
+  },
+  async dislikeBlog(context, payload) {
+    const blogId = payload.get("blogId");
+    const url = `/blog/${blogId}/dislike`;
+    return context.dispatch("likesAndDislikes", url, { root: true });
   },
 };

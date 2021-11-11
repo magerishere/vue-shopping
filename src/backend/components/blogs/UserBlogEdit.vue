@@ -13,6 +13,18 @@
     <img :src="inputs.image.oldVal" alt="Blog Image" />
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div class="mb-3">
+        <label for="catName" class="form-label">دسته بندی</label>
+        <select id="catName" class="form-select" v-model="inputs.catName.val">
+          <option
+            v-for="catName in BASIC_DATA.catNames"
+            :key="catName"
+            :value="catName"
+          >
+            {{ catName }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-3">
         <label for="title" class="form-label">عنوان</label>
         <input
           type="text"
@@ -72,6 +84,12 @@ import useOptions from "@/hooks/options";
 import useErrors from "@/hooks/errors";
 
 export default {
+  inject: {
+    BASIC_DATA: {
+      type: JSON,
+      required: true,
+    },
+  },
   props: {
     id: {
       type: Number,
@@ -85,6 +103,13 @@ export default {
     const inputs = reactive({
       id: {
         val: props.id,
+      },
+      catName: {
+        val: "",
+        isValid: true,
+        validate: {
+          required: true,
+        },
       },
       title: {
         val: "",
@@ -121,6 +146,7 @@ export default {
     });
 
     watch(blog, (b) => {
+      inputs.catName.val = b.catName;
       inputs.title.val = b.title;
       inputs.content.val = b.content;
       inputs.image.oldVal = b.image;

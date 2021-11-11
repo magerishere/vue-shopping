@@ -24,9 +24,6 @@ export default {
     mode: {
       type: String,
       required: false,
-      validator(value) {
-        return ["outline", "small"].includes(value);
-      },
     },
   },
 };
