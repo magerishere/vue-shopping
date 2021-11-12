@@ -10,16 +10,16 @@
             <h5 class="filter-title">دسته بندی</h5>
 
             <ul class="nested-list">
-              <li v-for="catName in BASIC_DATA.catNames" :key="catName">
-                <label :for="catName"
+              <li v-for="catName in BASIC_DATA.blogCatNames" :key="catName[0]">
+                <label :for="catName[0]"
                   ><input
                     type="checkbox"
-                    :id="catName"
-                    name="catName"
+                    :id="catName[0]"
+                    name="catNames"
                     @change="setFilters"
                   />
                   <span class="checkmark"></span>
-                  {{ catName }}
+                  {{ catName[1] }}
                 </label>
               </li>
             </ul>
@@ -27,30 +27,46 @@
 
           <hr />
           <li>
-            <h4 class="filter-title">ترتییب</h4>
+            <h4 class="filter-title">ترتیب</h4>
             <ul class="nested-list">
-              <li>
-                <label for="desc"
+              <li v-for="(sort, index) in BASIC_DATA.sorts" :key="sort[0]">
+                <label :for="sort[0]"
                   ><input
                     type="radio"
-                    id="desc"
-                    name="radio"
-                    checked
-                    @change="setOrder"
+                    :id="sort[0]"
+                    name="sorts"
+                    :checked="index === 0"
+                    @change="setSortFilters"
                   />
                   <span class="radio"></span>
-                  جدیدترین
+                  {{ sort[1] }}
                 </label>
               </li>
-              <li>
-                <label for="asc"
+              <li v-for="sortBy in BASIC_DATA.sortsBy" :key="sortBy[0]">
+                <label :for="sortBy[0]"
                   ><input
                     type="radio"
-                    id="asc"
-                    name="radio"
-                    @change="setOrder"
+                    :id="sortBy[0]"
+                    name="sorts"
+                    @change="setSortByFilters"
                   />
-                  <span class="radio"></span>قدیمی ترین
+                  <span class="radio"></span>
+                  {{ sortBy[1] }}
+                </label>
+              </li>
+              <li
+                v-for="sortByCount in BASIC_DATA.sortsByCount"
+                :key="sortByCount[0]"
+              >
+                <label :for="sortByCount[0]"
+                  ><input
+                    type="radio"
+                    :id="sortByCount[0]"
+                    name="sorts"
+                    @change="setSortByCountFilters"
+                  />
+                  <span class="radio"></span>
+                  {{ sortByCount[1] }}
                 </label>
               </li>
             </ul>
@@ -62,7 +78,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { reactive } from "vue";
 export default {
   inject: {
     BASIC_DATA: {
@@ -72,33 +88,67 @@ export default {
   },
   name: "BlogsSidebar",
   setup(_, context) {
-    const filters = ref([]);
+    const filters = reactive({
+      catNames: {
+        val: [],
+      },
+      orderBy: {
+        val: "desc",
+      },
+      orderByColumn: {
+        val: null,
+      },
+      orderByRelation: {
+        val: null,
+      },
+    });
+    // any filters except sort filter
     function setFilters(event) {
       const isChecked = event.target.checked;
-
       const filterValue = event.target.id;
       if (isChecked) {
-        filters.value["catName"] = filterValue;
-        // filters.value.push({[filterKey]:filterValue});
+        filters["catNames"].val.push(filterValue);
       } else {
-        const arrFilters = filters.value.slice();
-        const filterIndex = arrFilters.findIndex(
-          (filter) => filter === filterValue
-        );
-        arrFilters.splice(filterIndex, 1);
-        filters.value = arrFilters;
+        const newFilters = filters["catNames"].val.slice();
+        const filterIndex = newFilters.findIndex((val) => val === filterValue);
+        newFilters.splice(filterIndex, 1);
+        filters["catNames"].val = newFilters;
       }
-      console.log(filters.value);
+      applyFilters();
+    }
+    // sort filter for desc or asc based on created_at
+    function setSortFilters(event) {
+      const sortValue = event.target.id;
+      filters["orderBy"].val = sortValue;
+      filters["orderByColumn"].val = null;
+      applyFilters();
+    }
+    // sort filter for desc based on column
+    function setSortByFilters(event) {
+      const sortValue = event.target.id;
+      filters["orderByColumn"].val = sortValue;
+      filters["orderBy"].val = "desc";
+      applyFilters();
+    }
+    // sort filter for desc based on relations count
+    function setSortByCountFilters(event) {
+      const sortValue = event.target.id;
+      filters["orderBy"].val = "desc";
+      filters["orderByColumn"].val = null;
+      filters["orderByRelation"].val = sortValue;
+      applyFilters();
+    }
 
-      // context.emit('set-filters',filters.value)
+    function applyFilters() {
+      console.log(filters);
+      context.emit("apply-filters", filters);
     }
-    function setOrder(event) {
-      const orderByValue = event.target.id;
-      filters.value["orderBy"] = orderByValue;
-      console.log(filters.value);
-      context.emit("set-order", orderByValue);
-    }
-    return { setFilters, setOrder };
+    return {
+      setFilters,
+      setSortFilters,
+      setSortByFilters,
+      setSortByCountFilters,
+    };
   },
 };
 </script>

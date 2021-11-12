@@ -1,7 +1,12 @@
 import store from "@/store/index";
 import useValidator from "./validator";
 import useErrors from "./errors";
-async function submitForm(data = null, dispatch, options) {
+async function submitForm(
+  data = null,
+  dispatch,
+  options,
+  removeNullItems = false
+) {
   const validate = useValidator(data);
   if (!validate) {
     return;
@@ -9,10 +14,23 @@ async function submitForm(data = null, dispatch, options) {
   options.isLoading = true;
   const formData = new FormData();
   for (const key in data) {
+    // if file upload then append to form data
     if ("isFile" in data[key] && data[key].isFile) {
       formData.append(key, data[key].val);
-    } else if (!("isFile" in data[key])) {
-      formData.append(key, data[key].val);
+    } else {
+      if (Array.isArray(data[key].val)) {
+        formData.append(key, JSON.stringify(data[key].val));
+      } else {
+        if (removeNullItems) {
+          if (data[key].val !== null) {
+            // just only add items NOT null
+            formData.append(key, data[key].val);
+          }
+        } else {
+          // add everything number,null,string,etc...
+          formData.append(key, data[key].val);
+        }
+      }
     }
   }
   try {

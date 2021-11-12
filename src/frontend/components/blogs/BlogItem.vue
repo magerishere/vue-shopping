@@ -1,6 +1,9 @@
 <template>
   <li class="col-md-4">
     <base-card>
+      <span class="badge badge-right">{{ catName }}</span>
+
+      <span class="badge badge-left">{{ createdAt }}</span>
       <img :src="image" class="card-img-top" alt="image top" loading="lazy" />
       <div class="card-body">
         <h5 class="card-title">{{ title }}</h5>
@@ -37,6 +40,10 @@ export default {
       type: Number,
       required: true,
     },
+    catName: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -51,6 +58,10 @@ export default {
     },
     views: {
       type: Number,
+      required: true,
+    },
+    createdAt: {
+      type: String,
       required: true,
     },
     likes: {
@@ -75,9 +86,24 @@ li .card {
   min-height: 450px;
 }
 .card-text {
-  min-height: 50px;
+  min-height: 120px;
 }
 .float-start > * {
   margin-left: 0.25rem;
+}
+.badge {
+  padding: 0.25rem 0.5rem;
+  position: absolute;
+  margin-top: 0.5rem;
+}
+.badge.badge-right {
+  right: 0;
+  margin-right: 1rem;
+  background-color: darkviolet;
+}
+.badge.badge-left {
+  left: 0;
+  margin-left: 1rem;
+  background-color: #000;
 }
 </style>

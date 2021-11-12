@@ -10,17 +10,23 @@
     >
       <p v-for="error in options.errors" :key="error">{{ error }}</p>
     </base-dialog>
-    <img :src="inputs.image.oldVal" alt="Blog Image" />
+    <img :src="inputs.image.oldVal" alt="Blog Image" loading="lazy" />
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="catName" class="form-label">دسته بندی</label>
-        <select id="catName" class="form-select" v-model="inputs.catName.val">
+        <select
+          id="catName"
+          class="form-select"
+          ref="catNameSelect"
+          @change="setCatName"
+        >
           <option
-            v-for="catName in BASIC_DATA.catNames"
-            :key="catName"
+            v-for="catName in BASIC_DATA.blogCatNames"
+            :key="catName[0]"
             :value="catName"
+            :selected="inputs.catNameKey.val === catName[0]"
           >
-            {{ catName }}
+            {{ catName[1] }}
           </option>
         </select>
       </div>
@@ -104,6 +110,9 @@ export default {
       id: {
         val: props.id,
       },
+      catNameKey: {
+        val: "",
+      },
       catName: {
         val: "",
         isValid: true,
@@ -129,7 +138,6 @@ export default {
         oldVal: "",
         val: "",
         isValid: true,
-
         isFile: false,
       },
     });
@@ -146,11 +154,18 @@ export default {
     });
 
     watch(blog, (b) => {
+      inputs.catNameKey.val = b.catNameKey;
       inputs.catName.val = b.catName;
       inputs.title.val = b.title;
       inputs.content.val = b.content;
       inputs.image.oldVal = b.image;
     });
+
+    function setCatName(event) {
+      const catKeyAndName = event.target.value;
+      inputs.catNameKey.val = catKeyAndName[0];
+      inputs.catName.val = catKeyAndName[1];
+    }
 
     function setImage(event) {
       inputs.image.val = event.target.files[0];
@@ -159,7 +174,6 @@ export default {
 
     const submitForm = () => {
       useForm(inputs, "blog/editBlog", options);
-      console.log(inputs);
     };
     const { confirmErrors, confirmValidError } = useErrors(inputs, options);
 
@@ -170,6 +184,7 @@ export default {
       confirmErrors,
       setImage,
       options,
+      setCatName,
     };
   },
 };
@@ -178,5 +193,9 @@ export default {
 <style scoped>
 .actions {
   text-align: center;
+}
+img {
+  width: 40px;
+  height: 40px;
 }
 </style>

@@ -1,8 +1,9 @@
 <template>
   <tr>
     <td>{{ id }}</td>
-    <td>{{ title }}</td>
     <td><img :src="image" alt="Blog Image" loading="lazy" /></td>
+    <td>{{ catName }}</td>
+    <td>{{ title }}</td>
     <td>{{ StringFormat(content, 70) }}</td>
     <td>
       <base-button link :to="editBlogLink" mode="small">مشاهده</base-button>
@@ -22,6 +23,10 @@ export default {
   props: {
     id: {
       type: Number,
+      required: true,
+    },
+    catName: {
+      type: String,
       required: true,
     },
     title: {

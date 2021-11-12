@@ -26,7 +26,6 @@ function likesAndDislikes(props, data, likeDispatch, dislikeDispatch) {
     isLike.value = !isLike.value;
   };
   const likeIconClass = computed(() => {
-    console.log(isLike.value, "computed");
     return isLike.value ? "fa fa-thumbs-up" : "fa fa-thumbs-o-up";
   });
 

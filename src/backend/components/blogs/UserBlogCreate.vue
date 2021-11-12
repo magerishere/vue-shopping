@@ -13,15 +13,26 @@
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="catName" class="form-label">دسته بندی</label>
-        <select id="catName" class="form-select" v-model="inputs.catName.val">
+        <select
+          id="catName"
+          class="form-select"
+          :class="{ error: !inputs.catName.isValid }"
+          ref="catNameSelect"
+          @change="setCatName"
+          value=""
+          @blur="confirmValidError"
+        >
           <option
-            v-for="catName in BASIC_DATA.catNames"
-            :key="catName"
+            v-for="catName in BASIC_DATA.blogCatNames"
+            :key="catName[0]"
             :value="catName"
           >
-            {{ catName }}
+            {{ catName[1] }}
           </option>
         </select>
+        <div v-if="!inputs.catName.isValid" class="form-text-error">
+          دسته بندی مطلب را انتخاب کنید
+        </div>
       </div>
       <div class="mb-3">
         <label for="title" class="form-label">عنوان</label>
@@ -90,6 +101,9 @@ export default {
   },
   setup() {
     const inputs = reactive({
+      catNameKey: {
+        val: "",
+      },
       catName: {
         val: "",
         isValid: true,
@@ -121,6 +135,12 @@ export default {
       },
     });
 
+    function setCatName(event) {
+      const catKeyAndName = event.target.value.split(",");
+      inputs.catNameKey.val = catKeyAndName[0];
+      inputs.catName.val = catKeyAndName[1];
+    }
+
     function setImage(event) {
       inputs.image.val = event.target.files[0];
       inputs.image.isFile = true;
@@ -137,6 +157,7 @@ export default {
       confirmErrors,
       setImage,
       options,
+      setCatName,
     };
   },
 };

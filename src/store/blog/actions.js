@@ -3,7 +3,6 @@ import router from "@/router";
 export default {
   async addBlog(context, payload) {
     const blogData = payload;
-    console.log(blogData.get("catName"));
     const response = await Api.post("/blog", blogData);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
@@ -28,6 +27,7 @@ export default {
   },
   async getBlog(context, payload) {
     const blogId = payload.get("id");
+    console.log(blogId);
     const response = await Api.get("/blog/" + blogId);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
@@ -40,10 +40,14 @@ export default {
     context.dispatch("errorsHandler", responseData, { root: true });
     context.commit("setBlogs", responseData);
   },
-  async setFilters(context,payload) {
+  async setFilters(context, payload) {
     const filtersData = payload;
-    const response = await Api.post('/blogs',filtersData);
-  }
+    const response = await Api.post("/blogs", filtersData);
+    console.log(response);
+    const responseData = response.data;
+    context.dispatch("errorsHandler", responseData, { root: true });
+    context.commit("setBlogs", responseData);
+  },
   async getUserBlogs(context) {
     const response = await Api.get("/blogs/user");
     const responseData = response.data;

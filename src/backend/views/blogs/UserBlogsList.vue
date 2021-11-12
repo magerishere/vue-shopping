@@ -8,8 +8,9 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>عنوان</th>
           <th>عکس</th>
+          <th>دسته بندی</th>
+          <th>عنوان</th>
           <th>محتوا</th>
           <th>عملیات</th>
         </tr>
@@ -19,6 +20,7 @@
           v-for="blog in userBlogs"
           :key="blog.id"
           :id="blog.id"
+          :catName="blog.catName"
           :title="blog.title"
           :image="blog.image"
           :content="blog.content"
