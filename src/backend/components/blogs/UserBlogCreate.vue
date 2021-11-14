@@ -6,9 +6,9 @@
     <base-dialog
       :show="!!options.errors"
       title="خطایی رخ داد."
+      :messages="options.errors"
       @close="confirmErrors"
     >
-      <p v-for="error in options.errors" :key="error">{{ error }}</p>
     </base-dialog>
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div class="mb-3">

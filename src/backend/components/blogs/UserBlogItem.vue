@@ -4,14 +4,18 @@
     <td><img :src="image" alt="Blog Image" loading="lazy" /></td>
     <td>{{ catName }}</td>
     <td>{{ title }}</td>
-    <td>{{ StringFormat(content, 70) }}</td>
-    <td>
+    <td>{{ StringFormat(content, 30) }}</td>
+    <td class="actions">
       <base-button link :to="editBlogLink" mode="small">مشاهده</base-button>
+      <base-button mode="danger flat small" @click="removeBlog(id)"
+        >حذف</base-button
+      >
     </td>
   </tr>
 </template>
 
 <script>
+import { computed } from "vue";
 export default {
   inject: {
     StringFormat: {
@@ -42,10 +46,16 @@ export default {
       required: true,
     },
   },
-  computed: {
-    editBlogLink() {
-      return { name: "blogEdit", params: { id: this.id } };
-    },
+  setup(props, context) {
+    const editBlogLink = computed(() => {
+      return { name: "blogEdit", params: { id: props.id } };
+    });
+
+    const removeBlog = () => {
+      context.emit("remove-blog", props.id);
+    };
+
+    return { editBlogLink, removeBlog };
   },
 };
 </script>
@@ -54,5 +64,9 @@ export default {
 img {
   width: 40px;
   height: 40px;
+}
+
+.actions > * {
+  margin: 0 0.25rem;
 }
 </style>

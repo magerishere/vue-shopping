@@ -1,7 +1,10 @@
 <template>
   <base-spinner v-if="options.isLoading"></base-spinner>
-  <base-dialog :show="!!options.errors" @close="confirmErrors">
-    <p v-for="error in options.errors" :key="error">{{ error }}</p>
+  <base-dialog
+    :show="!!options.errors"
+    @close="confirmErrors"
+    :messages="options.errors"
+  >
   </base-dialog>
   <h6 v-if="options.done">با موفقیت انجام شد</h6>
   <form

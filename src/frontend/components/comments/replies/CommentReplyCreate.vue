@@ -1,6 +1,5 @@
 <template>
-  <base-dialog :show="!!options.errors">
-    <p v-for="error in options.errors" :key="error">{{ error }}</p>
+  <base-dialog :show="!!options.errors" :messages="options.errors">
   </base-dialog>
   <base-spinner v-if="options.isLoading"></base-spinner>
   <form @submit.prevent="sendReply" v-if="!options.isLoading && !options.done">

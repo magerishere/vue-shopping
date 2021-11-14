@@ -4,14 +4,20 @@
     <base-dialog
       :show="!!options.errors"
       title="خطایی رخ داد"
+      :messages="options.errors"
       @close="confirmErrors"
     >
-      <p v-for="error in options.errors" :key="error">{{ error }}</p>
     </base-dialog>
     <base-spinner v-if="options.isLoading"></base-spinner>
 
     <section class="col-md-9">
-      <ul class="row" v-if="hasBlogs && !options.isLoading">
+      <transition-group
+        appear
+        tag="ul"
+        name="blog-list"
+        v-if="hasBlogs && !options.isLoading"
+        class="row"
+      >
         <blog-item
           v-for="blog in blogs"
           :key="blog.id"
@@ -26,7 +32,8 @@
           :comments="blog.comments_count"
         >
         </blog-item>
-      </ul>
+      </transition-group>
+
       <div class="text-center mt-5" v-if="!hasBlogs && !options.isLoading">
         <h4 class="mb-5">هیچ مطلبی وجود ندارد. شما اولین پست را ایجاد کنید</h4>
         <base-button v-if="isAuth" link to="/dashboard/blog/create"
@@ -34,6 +41,11 @@
         >
         <base-button v-else link to="/auth">ورود / ثبت نام</base-button>
       </div>
+      <base-pagination
+        v-if="hasBlogs && !options.isLoading"
+        :pages="pages"
+        @paginator="paginator"
+      ></base-pagination>
     </section>
   </div>
 </template>
@@ -57,6 +69,10 @@ export default {
       type: Function,
       required: true,
     },
+    paginator: {
+      type: Function,
+      required: true,
+    },
   },
   setup() {
     const store = useStore();
@@ -73,24 +89,59 @@ export default {
       return store.getters["blog/hasBlogs"];
     });
 
+    const pages = computed(() => {
+      return store.getters["blog/pages"];
+    });
     const isAuth = computed(() => {
       return store.getters["auth/isAuth"];
     });
 
     // emits
-    async function applyFilters(filters) {
-      await useForm(filters, "blog/setFilters", options, true);
+    function applyFilters(filters) {
+      useForm(filters, "blog/setFilters", options, true);
+    }
+
+    function paginator(queryParamPage) {
+      const blogsData = {
+        page: {
+          val: queryParamPage,
+        },
+      };
+
+      useForm(blogsData, "blog/getBlogs", options);
     }
 
     const { confirmErrors } = useErrors(null, options);
     return {
       blogs,
       hasBlogs,
+      pages,
       confirmErrors,
       options,
       isAuth,
       applyFilters,
+      paginator,
     };
   },
 };
 </script>
+
+<style scoped>
+.blog-list-enter-from,
+.blog-list-leave-to {
+  opacity: 0;
+}
+
+.blog-list-enter-active {
+  transition: all 0.7s ease-out;
+}
+
+.blog-list-leave-active {
+  transition: all 0.7s ease-in;
+}
+
+.blog-list-enter-to,
+.blog-list-leave-from {
+  opacity: 1;
+}
+</style>

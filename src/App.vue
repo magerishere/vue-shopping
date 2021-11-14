@@ -8,6 +8,7 @@
       </transition>
     </router-view>
   </article>
+  <!-- <the-footer></the-footer> -->
 </template>
 
 <script>
@@ -15,11 +16,14 @@ import "./assets/css/bootstrap.rtl.min.css";
 import "./assets/css/styles.css";
 import "./assets/css/font-awesome.css";
 import TheHeader from "./components/header/TheHeader.vue";
+import TheFooter from "./components/footer/TheFooter.vue";
+
 import { useStore } from "vuex";
 export default {
   name: "App",
   components: {
     TheHeader,
+    TheFooter,
   },
   setup() {
     const store = useStore();
@@ -43,6 +47,8 @@ body {
   margin: 0;
   direction: rtl;
   overflow-x: hidden;
+  height: 100vh;
+  position: relative;
 }
 
 article {

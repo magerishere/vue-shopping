@@ -5,19 +5,26 @@ async function submitForm(
   data = null,
   dispatch,
   options,
-  removeNullItems = false
+  removeNullItems = false,
+  withoutLoading = false
 ) {
   const validate = useValidator(data);
   if (!validate) {
     return;
   }
-  options.isLoading = true;
+  if (!withoutLoading) {
+    options.isLoading = true;
+  }
+
   const formData = new FormData();
   for (const key in data) {
     // if file upload then append to form data
-    if ("isFile" in data[key] && data[key].isFile) {
-      formData.append(key, data[key].val);
+    if ("isFile" in data[key]) {
+      if (data[key].isFile) {
+        formData.append(key, data[key].val);
+      }
     } else {
+      // array need to be json encode
       if (Array.isArray(data[key].val)) {
         formData.append(key, JSON.stringify(data[key].val));
       } else {
@@ -40,9 +47,9 @@ async function submitForm(
     options.errors = err.message.split(",");
     options.done = false;
   }
-
-  options.isLoading = false;
-
+  if (!withoutLoading) {
+    options.isLoading = false;
+  }
   return useErrors(data, options);
 }
 

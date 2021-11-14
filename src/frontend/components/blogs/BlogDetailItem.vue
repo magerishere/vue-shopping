@@ -1,7 +1,10 @@
 <template>
   <base-card>
-    <base-dialog :show="!!options.errors" @close="confirmErrors">
-      <p v-for="error in options.errors" :key="error">{{ error }}</p>
+    <base-dialog
+      :show="!!options.errors"
+      @close="confirmErrors"
+      :messages="options.errors"
+    >
     </base-dialog>
     <header class="text-center">
       <h3>{{ title }}</h3>
@@ -14,17 +17,15 @@
       <p>
         {{ content }}
       </p>
-      <div>
-        <div class="actions">
-          <span @click="like" class="like">
-            <i :class="likeIconClass" aria-hidden="true"></i>
-            <small>{{ likesCount }}</small>
-          </span>
-          <span @click="dislike" class="dislike">
-            <i :class="dislikeIconClass" aria-hidden="true"></i>
-            <small>{{ dislikesCount }}</small>
-          </span>
-        </div>
+      <div class="actions" v-if="isAuth">
+        <span @click="like" class="like">
+          <i :class="likeIconClass" aria-hidden="true"></i>
+          <small>{{ likesCount }}</small>
+        </span>
+        <span @click="dislike" class="dislike">
+          <i :class="dislikeIconClass" aria-hidden="true"></i>
+          <small>{{ dislikesCount }}</small>
+        </span>
       </div>
       <hr />
       <h6>نظرات</h6>

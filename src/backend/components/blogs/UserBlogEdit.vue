@@ -6,20 +6,15 @@
     <base-dialog
       :show="!!options.errors"
       title="خطایی رخ داد."
+      :messages="options.errors"
       @close="confirmErrors"
     >
-      <p v-for="error in options.errors" :key="error">{{ error }}</p>
     </base-dialog>
     <img :src="inputs.image.oldVal" alt="Blog Image" loading="lazy" />
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="catName" class="form-label">دسته بندی</label>
-        <select
-          id="catName"
-          class="form-select"
-          ref="catNameSelect"
-          @change="setCatName"
-        >
+        <select id="catName" class="form-select" @change="setCatName">
           <option
             v-for="catName in BASIC_DATA.blogCatNames"
             :key="catName[0]"
@@ -162,7 +157,7 @@ export default {
     });
 
     function setCatName(event) {
-      const catKeyAndName = event.target.value;
+      const catKeyAndName = event.target.value.split(",");
       inputs.catNameKey.val = catKeyAndName[0];
       inputs.catName.val = catKeyAndName[1];
     }

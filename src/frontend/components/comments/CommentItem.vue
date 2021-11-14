@@ -1,7 +1,10 @@
 <template>
   <base-card>
-    <base-dialog :show="!!options.errors" @close="confirmErrors">
-      <p v-for="error in options.errors" :key="error">{{ error }}</p>
+    <base-dialog
+      :show="!!options.errors"
+      @close="confirmErrors"
+      :messages="options.errors"
+    >
     </base-dialog>
     <div class="d-flex">
       <img

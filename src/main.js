@@ -15,6 +15,13 @@ const BaseSpinner = defineAsyncComponent(() =>
   import("./components/ui/BaseSpinner.vue")
 );
 
+const BasePagination = defineAsyncComponent(() =>
+  import("./components/ui/BasePagination")
+);
+
+const BaseToast = defineAsyncComponent(() =>
+  import("./components/ui/BaseToast.vue")
+);
 const app = createApp(App);
 
 app.use(router);
@@ -24,6 +31,8 @@ app.component("base-card", BaseCard);
 app.component("base-button", BaseButton);
 app.component("base-dialog", BaseDialog);
 app.component("base-spinner", BaseSpinner);
+app.component("base-pagination", BasePagination);
+app.component("base-toast", BaseToast);
 
 app.provide("StringFormat", StringFormat);
 app.provide("BASIC_DATA", BasicData);

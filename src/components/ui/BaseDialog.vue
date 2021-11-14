@@ -3,10 +3,10 @@
     <div v-if="show" @click="close" class="backdrop"></div>
     <transition name="dialog">
       <dialog open v-if="show">
-        <header>
+        <header :class="mode">
           <h1>{{ title }}</h1>
         </header>
-        <section>
+        <section class="messages">
           <slot>
             <div v-if="messages">
               <p v-for="message in messages" :key="message">{{ message }}</p>
@@ -51,6 +51,10 @@ export default {
       required: false,
       default: null,
     },
+    mode: {
+      type: String,
+      required: false,
+    },
   },
   setup(props, context) {
     function close() {
@@ -59,7 +63,7 @@ export default {
       }
       context.emit("close");
     }
-
+    console.log(props.mode);
     return { close };
   },
 };
@@ -85,7 +89,9 @@ dialog {
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 }
-
+.messages {
+  padding: 0 2rem;
+}
 header {
   background-color: darkviolet;
   border-top-left-radius: 12px;
@@ -121,5 +127,9 @@ header h1 {
 .dialog-leave-from {
   opacity: 1;
   transform: scale(1);
+}
+
+.danger {
+  background-color: darkred;
 }
 </style>

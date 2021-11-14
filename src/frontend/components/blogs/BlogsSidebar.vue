@@ -140,7 +140,6 @@ export default {
     }
 
     function applyFilters() {
-      console.log(filters);
       context.emit("apply-filters", filters);
     }
     return {

@@ -81,4 +81,30 @@ a.router-link-active {
   background-color: darkviolet;
   color: #fff;
 }
+
+.page {
+  border-radius: 0;
+  color: darkviolet;
+  background-color: #fff;
+}
+
+.page:hover,
+.page.active {
+  background-color: darkviolet;
+  color: #fff;
+}
+
+.flat {
+  border-radius: 0;
+}
+
+.danger {
+  border-color: darkred;
+  background-color: darkred;
+  color: #fff;
+}
+.danger:hover {
+  background: #fff;
+  color: darkred;
+}
 </style>

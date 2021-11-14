@@ -7,8 +7,6 @@ export default {
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
 
-    context.commit("setUserBlogs", responseData);
-
     router.push("/dashboard/blogs");
   },
   async editBlog(context, payload) {
@@ -19,15 +17,27 @@ export default {
     context.dispatch("errorsHandler", responseData, { root: true });
     router.replace({ name: "userBlogs" });
   },
-  async getBlogs(context) {
-    const response = await Api.get("/blogs");
+  async removeBlog(context, payload) {
+    const blogId = payload.get("id");
+    console.log(context);
+    const response = await Api.post(`blog/${blogId}`, { _method: "delete" });
+    const responseData = response.data;
+    context.dispatch("errorsHandler", responseData, { root: true });
+    const userBlogs = context.state["userBlogs"];
+    const indexCurrentBlog = userBlogs.data.findIndex(
+      (blog) => blog.id == blogId
+    );
+    userBlogs.data.splice(indexCurrentBlog, 1);
+  },
+  async getBlogs(context, payload) {
+    const page = payload.get("page");
+    const response = await Api.get("/blogs" + "?" + page);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
     context.commit("setBlogs", responseData);
   },
   async getBlog(context, payload) {
     const blogId = payload.get("id");
-    console.log(blogId);
     const response = await Api.get("/blog/" + blogId);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
@@ -43,20 +53,19 @@ export default {
   async setFilters(context, payload) {
     const filtersData = payload;
     const response = await Api.post("/blogs", filtersData);
-    console.log(response);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
     context.commit("setBlogs", responseData);
   },
-  async getUserBlogs(context) {
-    const response = await Api.get("/blogs/user");
+  async getUserBlogs(context, payload) {
+    const page = payload.get("page");
+    const response = await Api.get("/blogs/user" + "?" + page);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
     context.commit("setUserBlogs", responseData);
   },
   async getUserBlog(context, payload) {
     const blogId = payload.get("id");
-
     const response = await Api.get(`/blog/user/${blogId}/edit`);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
