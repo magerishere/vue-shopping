@@ -8,6 +8,8 @@
       </transition>
     </router-view>
   </article>
+  <base-toast v-if="!!toastStatus" :mode="toastStatus"></base-toast>
+
   <!-- <the-footer></the-footer> -->
 </template>
 
@@ -15,6 +17,7 @@
 import "./assets/css/bootstrap.rtl.min.css";
 import "./assets/css/styles.css";
 import "./assets/css/font-awesome.css";
+import { computed } from "vue";
 import TheHeader from "./components/header/TheHeader.vue";
 import TheFooter from "./components/footer/TheFooter.vue";
 
@@ -28,6 +31,13 @@ export default {
   setup() {
     const store = useStore();
     store.dispatch("auth/tryLogin");
+
+    const toastStatus = computed(() => {
+      return store.getters["getToastStatus"];
+    });
+    console.log(toastStatus);
+
+    return { toastStatus };
   },
 };
 </script>

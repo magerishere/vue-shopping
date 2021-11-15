@@ -2,6 +2,10 @@
   <base-dialog :show="!!options.errors" :messages="options.errors">
   </base-dialog>
   <base-spinner v-if="options.isLoading"></base-spinner>
+  <h6 v-if="options.done" class="text-success">
+    پس از تایید ادمین،نمایش داده خواهد شد
+  </h6>
+
   <form @submit.prevent="sendReply" v-if="!options.isLoading && !options.done">
     <div class="mb-3">
       <label for="body" class="form-label">پاسخ شما</label>
@@ -20,7 +24,6 @@
     </div>
     <base-button>ثبت</base-button>
   </form>
-  <p v-if="options.done">با موفقیت انجام شد</p>
 </template>
 
 <script>

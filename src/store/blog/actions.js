@@ -6,8 +6,8 @@ export default {
     const response = await Api.post("/blog", blogData);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
-
     router.push("/dashboard/blogs");
+    context.commit("setToastStatus", "success", { root: true });
   },
   async editBlog(context, payload) {
     const blogData = payload;
@@ -19,7 +19,6 @@ export default {
   },
   async removeBlog(context, payload) {
     const blogId = payload.get("id");
-    console.log(context);
     const response = await Api.post(`blog/${blogId}`, { _method: "delete" });
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
@@ -28,6 +27,7 @@ export default {
       (blog) => blog.id == blogId
     );
     userBlogs.data.splice(indexCurrentBlog, 1);
+    context.commit("setToastStatus", "success", { root: true });
   },
   async getBlogs(context, payload) {
     const page = payload.get("page");

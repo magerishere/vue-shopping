@@ -6,7 +6,9 @@
     :messages="options.errors"
   >
   </base-dialog>
-  <h6 v-if="options.done">با موفقیت انجام شد</h6>
+  <h6 v-if="options.done" class="text-success">
+    پس از تایید ادمین،نمایش داده خواهد شد
+  </h6>
   <form
     @submit.prevent="submitForm"
     v-if="!options.isLoading && !!!options.errors && !options.done"

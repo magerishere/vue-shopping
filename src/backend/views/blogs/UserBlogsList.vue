@@ -18,6 +18,8 @@
     <table class="table" v-if="hasUserBlogs && !options.isLoading">
       <thead>
         <tr>
+          <td><input type="checkbox" /></td>
+
           <th>#</th>
           <th>عکس</th>
           <th>دسته بندی</th>
@@ -48,7 +50,6 @@
       :pages="pages"
       @paginator="paginator"
     ></base-pagination>
-    <base-toast></base-toast>
   </div>
 </template>
 
@@ -74,7 +75,6 @@ export default {
   setup() {
     const store = useStore();
     const options = useOptions();
-
     onMounted(async () => {
       await useForm(null, "blog/getUserBlogs", options);
     });
@@ -102,9 +102,9 @@ export default {
       if (id) {
         blogId.value = id;
       }
-
       confirm.value = !confirm.value;
     };
+
     const removeBlog = () => {
       const blogData = {
         id: {
@@ -123,6 +123,7 @@ export default {
       };
       useForm(userBlogsData, "blog/getUserBlogs", options);
     }
+
     const { confirmErrors } = useErrors(null, options);
 
     return {

@@ -124,4 +124,8 @@ li .card {
 .blog-leave-from {
   opacity: 1;
 }
+
+img {
+  height: 240px;
+}
 </style>

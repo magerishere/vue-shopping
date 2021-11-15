@@ -1,5 +1,6 @@
 <template>
   <tr>
+    <td><input type="checkbox" /></td>
     <td>{{ id }}</td>
     <td><img :src="image" alt="Blog Image" loading="lazy" /></td>
     <td>{{ catName }}</td>

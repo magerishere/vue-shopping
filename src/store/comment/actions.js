@@ -5,6 +5,7 @@ export default {
     const response = await Api.post("/comment", commentData);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
+    context.commit("setToastStatus", "success", { root: true });
   },
   async likeComment(context, payload) {
     const commentId = payload.get("commentId");
@@ -21,6 +22,7 @@ export default {
     const response = await Api.post(`/comment-reply`, replyData);
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
+    context.commit("setToastStatus", "success", { root: true });
   },
   async likeCommentReply(context, payload) {
     const commentReplyId = payload.get("commentReplyId");

@@ -1,5 +1,5 @@
 export default {
-  setComments(state, payload) {
+  setComment(state, payload) {
     const comment = payload.comment;
     state.comments.unshift(comment);
   },

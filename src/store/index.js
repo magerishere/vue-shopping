@@ -12,6 +12,16 @@ const store = createStore({
     user: userModule,
     comment: commentModule,
   },
+  state() {
+    return {
+      toastStatus: "",
+    };
+  },
+  mutations: {
+    setToastStatus(state, payload) {
+      state.toastStatus = payload;
+    },
+  },
   actions: {
     async likesAndDislikes(context, payload) {
       const url = payload;
@@ -27,6 +37,11 @@ const store = createStore({
         console.log(errors);
         throw errors;
       }
+    },
+  },
+  getters: {
+    getToastStatus(state) {
+      return state.toastStatus;
     },
   },
 });

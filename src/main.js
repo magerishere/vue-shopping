@@ -4,6 +4,7 @@ import store from "./store/index";
 import App from "./App.vue";
 import BaseCard from "./components/ui/BaseCard.vue";
 import BaseButton from "./components/ui/BaseButton.vue";
+import BaseInput from "./components/ui/BaseInput.vue";
 import StringFormat from "./helpers/StringFormat";
 import BasicData from "./basic-data.json";
 
@@ -29,6 +30,7 @@ app.use(store);
 
 app.component("base-card", BaseCard);
 app.component("base-button", BaseButton);
+app.component("BaseInput", BaseInput);
 app.component("base-dialog", BaseDialog);
 app.component("base-spinner", BaseSpinner);
 app.component("base-pagination", BasePagination);

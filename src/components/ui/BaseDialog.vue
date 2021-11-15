@@ -63,7 +63,6 @@ export default {
       }
       context.emit("close");
     }
-    console.log(props.mode);
     return { close };
   },
 };

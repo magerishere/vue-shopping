@@ -11,16 +11,14 @@
 
             <ul class="nested-list">
               <li v-for="catName in BASIC_DATA.blogCatNames" :key="catName[0]">
-                <label :for="catName[0]"
-                  ><input
-                    type="checkbox"
-                    :id="catName[0]"
-                    name="catNames"
-                    @change="setFilters"
-                  />
-                  <span class="checkmark"></span>
-                  {{ catName[1] }}
-                </label>
+                <base-input
+                  :label-for="catName[0]"
+                  input-type="checkbox"
+                  :input-id="catName[0]"
+                  input-name="catNames"
+                  @change-action="setFilters"
+                  :label-text="catName[1]"
+                ></base-input>
               </li>
             </ul>
           </li>
@@ -30,44 +28,39 @@
             <h4 class="filter-title">ترتیب</h4>
             <ul class="nested-list">
               <li v-for="(sort, index) in BASIC_DATA.sorts" :key="sort[0]">
-                <label :for="sort[0]"
-                  ><input
-                    type="radio"
-                    :id="sort[0]"
-                    name="sorts"
-                    :checked="index === 0"
-                    @change="setSortFilters"
-                  />
-                  <span class="radio"></span>
-                  {{ sort[1] }}
-                </label>
+                <base-input
+                  :label-for="sort[0]"
+                  input-type="radio"
+                  :input-id="sort[0]"
+                  input-name="sorts"
+                  :input-checked="index === 0"
+                  @change-action="setSortFilters"
+                  :label-text="sort[1]"
+                ></base-input>
               </li>
               <li v-for="sortBy in BASIC_DATA.sortsBy" :key="sortBy[0]">
-                <label :for="sortBy[0]"
-                  ><input
-                    type="radio"
-                    :id="sortBy[0]"
-                    name="sorts"
-                    @change="setSortByFilters"
-                  />
-                  <span class="radio"></span>
-                  {{ sortBy[1] }}
-                </label>
+                <base-input
+                  :label-for="sortBy[0]"
+                  input-type="radio"
+                  :input-id="sortBy[0]"
+                  input-name="sorts"
+                  @change-action="setSortByFilters"
+                  :label-text="sortBy[1]"
+                ></base-input>
               </li>
+
               <li
                 v-for="sortByCount in BASIC_DATA.sortsByCount"
                 :key="sortByCount[0]"
               >
-                <label :for="sortByCount[0]"
-                  ><input
-                    type="radio"
-                    :id="sortByCount[0]"
-                    name="sorts"
-                    @change="setSortByCountFilters"
-                  />
-                  <span class="radio"></span>
-                  {{ sortByCount[1] }}
-                </label>
+                <base-input
+                  :label-for="sortByCount[0]"
+                  input-type="radio"
+                  :input-id="sortByCount[0]"
+                  input-name="sorts"
+                  @change-action="setSortByCountFilters"
+                  :label-text="sortByCount[1]"
+                ></base-input>
               </li>
             </ul>
           </li>
@@ -80,6 +73,7 @@
 <script>
 import { reactive } from "vue";
 export default {
+  emits: ["apply-filters"],
   inject: {
     BASIC_DATA: {
       type: JSON,
@@ -114,6 +108,7 @@ export default {
         newFilters.splice(filterIndex, 1);
         filters["catNames"].val = newFilters;
       }
+
       applyFilters();
     }
     // sort filter for desc or asc based on created_at
@@ -121,6 +116,7 @@ export default {
       const sortValue = event.target.id;
       filters["orderBy"].val = sortValue;
       filters["orderByColumn"].val = null;
+      filters["orderByRelation"].val = null;
       applyFilters();
     }
     // sort filter for desc based on column
@@ -128,6 +124,7 @@ export default {
       const sortValue = event.target.id;
       filters["orderByColumn"].val = sortValue;
       filters["orderBy"].val = "desc";
+      filters["orderByRelation"].val = null;
       applyFilters();
     }
     // sort filter for desc based on relations count
@@ -140,6 +137,8 @@ export default {
     }
 
     function applyFilters() {
+      console.log(filters);
+
       context.emit("apply-filters", filters);
     }
     return {
@@ -164,84 +163,6 @@ nav {
 .nested-list li {
   margin: 0.5rem 1rem;
   position: relative;
-}
-
-.nested-list li label {
-  cursor: pointer;
-  margin-right: 1.5rem;
-  font-size: 1rem;
-}
-
-.nested-list li label input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.checkmark {
-  position: absolute;
-  width: 1rem;
-  height: 1rem;
-  top: 4px;
-  right: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-}
-
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-  left: 6px;
-  top: -7px;
-  width: 10px;
-  height: 19px;
-  border: solid darkviolet;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-
-.nested-list li label input[type="checkbox"]:checked ~ .checkmark:after {
-  display: block;
-}
-
-/* radio */
-.nested-list li label input[type="radio"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.radio {
-  position: absolute;
-  width: 1rem;
-  height: 1rem;
-  top: 4px;
-  right: 0;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-}
-
-.radio:after {
-  content: "";
-  position: absolute;
-  display: none;
-  left: 6px;
-  top: -7px;
-  width: 10px;
-  height: 19px;
-  border: solid darkviolet;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-
-.nested-list li label input[type="radio"]:checked ~ .radio:after {
-  display: block;
 }
 
 .filter-title {
