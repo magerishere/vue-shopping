@@ -18,15 +18,18 @@ export default {
     router.replace({ name: "userBlogs" });
   },
   async removeBlog(context, payload) {
-    const blogId = payload.get("id");
-    const response = await Api.post(`blog/${blogId}`, { _method: "delete" });
+    const blogIds = JSON.parse(payload.get("ids"));
+    const response = await Api.post(`blog`, { blogIds, _method: "delete" });
     const responseData = response.data;
     context.dispatch("errorsHandler", responseData, { root: true });
     const userBlogs = context.state["userBlogs"];
-    const indexCurrentBlog = userBlogs.data.findIndex(
-      (blog) => blog.id == blogId
-    );
-    userBlogs.data.splice(indexCurrentBlog, 1);
+    for (let i = 0; i < blogIds.length; i++) {
+      const indexCurrentBlog = userBlogs.data.findIndex(
+        (blog) => blog.id == blogIds[i]
+      );
+      console.log(i + ":" + blogIds[i] + "index" + indexCurrentBlog);
+      userBlogs.data.splice(indexCurrentBlog, 1);
+    }
     context.commit("setToastStatus", "success", { root: true });
   },
   async getBlogs(context, payload) {

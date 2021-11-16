@@ -11,35 +11,22 @@
     >
     </base-dialog>
     <form @submit.prevent="submitForm">
-      <div class="mb-3">
-        <label for="email" class="form-label">ایمیل</label>
-        <input
-          type="text"
-          id="email"
-          class="form-control"
-          :class="{ error: !inputs.email.isValid }"
-          v-model.trim="inputs.email.val"
-          @blur="confirmValidError"
-        />
-        <div v-if="!inputs.email.isValid" class="form-text-error">
-          ایمیل معتبر وارد کنید
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">رمز عبور</label>
-        <input
-          type="password"
-          id="password"
-          class="form-control"
-          :class="{ error: !inputs.password.isValid }"
-          v-model.trim="inputs.password.val"
-          autocomplete
-          @blur="confirmValidError"
-        />
-      </div>
-      <div v-if="!inputs.password.isValid" class="form-text-error">
-        رمزعبور خودرا وارد کنید
-      </div>
+      <BaseInputText
+        text="ایمیل"
+        id="email"
+        v-model.trim="inputs.email.val"
+        :isValid="inputs.email.isValid"
+        errorMsg="ایمیل معتبر وارد کنید"
+        :confirmErr="confirmValidError"
+      />
+      <BaseInputPassword
+        text="رمزعبور"
+        id="password"
+        v-model.trim="inputs.password.val"
+        :isValid="inputs.password.isValid"
+        errorMsg="رمزعبور خودرا وارد کنید"
+        :confirmErr="confirmValidError"
+      />
 
       <div class="actions">
         <base-button>ورود</base-button>

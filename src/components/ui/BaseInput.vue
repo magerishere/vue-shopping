@@ -1,66 +1,49 @@
 <template>
-  <label :for="labelFor"
-    ><input
-      :type="inputType"
-      :id="inputId"
-      :name="inputName"
-      @change="changeAction"
-      :checked="inputChecked"
-    />
+  <label :for="id"
+    ><input :type="type" :id="id" :name="name" :value="id" @change="checked" />
     <span :class="spanClass"></span>
-    {{ labelText }}
+    {{ text }}
   </label>
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, inject } from "vue";
 export default {
-  emits: ["change-action"],
-
   props: {
-    labelFor: {
-      type: String,
+    modelValue: Array,
+    text: {
+      type: [String, Number],
       required: true,
     },
-    labelText: {
-      type: String,
-      required: true,
-    },
-    inputType: {
+    type: {
       type: String,
       required: true,
       validator(value) {
         return ["checkbox", "radio"].includes(value);
       },
     },
-    inputId: {
-      type: String,
+    id: {
+      type: [Number, String],
       required: true,
     },
-    inputName: {
+    name: {
       type: String,
-      required: true,
-    },
-    inputChecked: {
-      type: Boolean,
       required: false,
-      default: false,
     },
   },
-  setup(props, context) {
+
+  setup(props) {
     const spanClass = computed(() => {
-      if (props.inputType === "checkbox") {
+      if (props.type === "checkbox") {
         return "checkmark";
       } else {
         return "radio";
       }
     });
 
-    function changeAction(event) {
-      context.emit("change-action", event);
-    }
+    const checked = inject("checkMarkInput", null);
 
-    return { spanClass, changeAction };
+    return { spanClass, checked };
   },
 };
 </script>

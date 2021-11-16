@@ -1,7 +1,9 @@
 <template>
   <tr>
-    <td><input type="checkbox" /></td>
-    <td>{{ id }}</td>
+    <td>
+      <BaseInput :text="id" type="checkbox" name="blog" :id="id" />
+    </td>
+
     <td><img :src="image" alt="Blog Image" loading="lazy" /></td>
     <td>{{ catName }}</td>
     <td>{{ title }}</td>
@@ -69,5 +71,9 @@ img {
 
 .actions > * {
   margin: 0 0.25rem;
+}
+
+td {
+  position: relative;
 }
 </style>

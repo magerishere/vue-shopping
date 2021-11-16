@@ -15,12 +15,24 @@
         <base-button @click="removeBlog" mode="danger">حذف</base-button>
       </template>
     </base-dialog>
-    <table class="table" v-if="hasUserBlogs && !options.isLoading">
+    <base-button
+      v-if="blogIds.length > 0"
+      mode="danger small"
+      @click="confirmRemoveBlog"
+      >حذف موارد انتخاب شده</base-button
+    >
+    <table class="table mt-3" v-if="hasUserBlogs && !options.isLoading">
       <thead>
         <tr>
-          <td><input type="checkbox" /></td>
+          <th>
+            <base-input
+              text="#"
+              id="selectedAll"
+              type="checkbox"
+              @change="selectedAll"
+            ></base-input>
+          </th>
 
-          <th>#</th>
           <th>عکس</th>
           <th>دسته بندی</th>
           <th>عنوان</th>
@@ -54,7 +66,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, provide } from "vue";
 import { useStore } from "vuex";
 import useForm from "@/hooks/form";
 import useOptions from "@/hooks/options";
@@ -62,6 +74,7 @@ import useErrors from "@/hooks/errors";
 import UserBlogItem from "../../components/blogs/UserBlogItem.vue";
 export default {
   name: "UserBlogsList",
+
   emits: {
     removeBlog: {
       type: Function,
@@ -95,24 +108,76 @@ export default {
       return store.getters["blog/userPages"];
     });
 
-    // remove blog processing
-    const blogId = ref(null);
-    const confirm = ref(false);
-    const confirmRemoveBlog = (id) => {
-      if (id) {
-        blogId.value = id;
+    const blogIds = ref([]);
+    provide("checkMarkInput", function (event) {
+      const blogId = event.target.id;
+      const isChecked = event.target.checked;
+      if (isChecked) {
+        blogIds.value.push(blogId);
+      } else {
+        const newBlogIds = blogIds.value.slice();
+        const indexOfCurrentId = newBlogIds.findIndex((id) => id == blogId);
+        newBlogIds.splice(indexOfCurrentId, 1);
+        blogIds.value = newBlogIds;
       }
+    });
+
+    const selectedAll = (event) => {
+      const isChecked = event.target.checked;
+      // empty all value
+      blogIds.value = [];
+      const checkBoxInputs = document.querySelectorAll(
+        'input[type="checkbox"]'
+      );
+      if (isChecked) {
+        // checked all inputs
+        for (let i = 0; i < checkBoxInputs.length; i++) {
+          checkBoxInputs[i].checked = true;
+          // except input that handle All selected
+          if (checkBoxInputs[i].id !== "selectedAll") {
+            blogIds.value.push(checkBoxInputs[i].id);
+          }
+        }
+      } else {
+        // unchecked all inputs
+        for (let i = 0; i < checkBoxInputs.length; i++) {
+          checkBoxInputs[i].checked = false;
+        }
+      }
+      console.log(blogIds.value);
+    };
+    // remove blog processing
+
+    const confirm = ref(false);
+    const selectedAllInput = document.getElementById("selectedAll");
+    // toggle confirm remove blogs
+    const confirmRemoveBlog = (id = null) => {
+      // if remove one item
+      if (id) {
+        blogIds.value.push(id);
+      }
+      console.log(blogIds.value);
       confirm.value = !confirm.value;
     };
 
-    const removeBlog = () => {
+    const removeBlog = async () => {
       const blogData = {
-        id: {
-          val: blogId.value,
+        ids: {
+          val: blogIds.value,
         },
       };
-      useForm(blogData, "blog/removeBlog", options, false, true);
+
+      await useForm(blogData, "blog/removeBlog", options, false, true);
+
       confirm.value = false;
+      // if success
+      if (options.done) {
+        blogIds.value = [];
+        // uncheck input selected all after remove
+        if (selectedAllInput) {
+          document.getElementById("selectedAll").checked = false;
+        }
+      }
     };
 
     function paginator(queryParamPage) {
@@ -137,6 +202,8 @@ export default {
       confirm,
       confirmErrors,
       confirmRemoveBlog,
+      blogIds,
+      selectedAll,
     };
   },
 };
@@ -164,5 +231,9 @@ export default {
 .blog-list-leave-to {
   transform: translateX(30px);
   opacity: 0;
+}
+
+th {
+  position: relative;
 }
 </style>

@@ -11,50 +11,31 @@
     >
     </base-dialog>
     <form @submit.prevent="submitForm">
-      <div class="mb-3">
-        <label for="userName" class="form-label">نام کاربری</label>
-        <input
-          type="userName"
-          id="userName"
-          class="form-control"
-          :class="{ error: !inputs.userName.isValid }"
-          v-model.trim="inputs.userName.val"
-          @blur="confirmValidError"
-        />
-        <div v-if="!inputs.userName.isValid" class="form-text-error">
-          نام کاربری خود را وارد کنید
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="email" class="form-label">ایمیل</label>
-        <input
-          type="text"
-          id="email"
-          class="form-control"
-          :class="{ error: !inputs.email.isValid }"
-          v-model.trim="inputs.email.val"
-          @blur="confirmValidError"
-        />
-        <div v-if="inputs.email.isValid" class="form-text">
-          ما ایمیل شمارا محفوظ نگه میداریم
-        </div>
-        <div v-else class="form-text-error">ایمیل معتبر وارد کنید</div>
-      </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">رمز عبور</label>
-        <input
-          type="password"
-          id="password"
-          class="form-control"
-          :class="{ error: !inputs.password.isValid }"
-          v-model.trim="inputs.password.val"
-          autocomplete
-          @blur="confirmValidError"
-        />
-        <div v-if="!inputs.password.isValid" class="form-text-error">
-          رمزعبور معتبر وارد کنید (حداقل 8 کاراکتر)
-        </div>
-      </div>
+      <BaseInputText
+        text="نام کاربری"
+        id="userName"
+        v-model.trim="inputs.userName.val"
+        :isValid="inputs.userName.isValid"
+        errorMsg="نام کاربری خود را وارد کنید"
+        :confirmErr="confirmValidError"
+      />
+      <BaseInputText
+        text="ایمیل"
+        id="email"
+        v-model.trim="inputs.email.val"
+        :isValid="inputs.email.isValid"
+        errorMsg="ما ایمیل شمارا محفوظ نگه میداریم"
+        :confirmErr="confirmValidError"
+      />
+      <BaseInputPassword
+        text="رمزعبور"
+        id="password"
+        v-model.trim="inputs.password.val"
+        :isValid="inputs.password.isValid"
+        errorMsg="رمزعبور معتبر وارد کنید (حداقل 8 کاراکتر)"
+        :confirmErr="confirmValidError"
+      />
+
       <div class="actions">
         <base-button>ثبت نام</base-button>
       </div>

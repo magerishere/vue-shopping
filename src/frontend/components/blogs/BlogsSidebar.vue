@@ -12,12 +12,11 @@
             <ul class="nested-list">
               <li v-for="catName in BASIC_DATA.blogCatNames" :key="catName[0]">
                 <base-input
-                  :label-for="catName[0]"
-                  input-type="checkbox"
-                  :input-id="catName[0]"
-                  input-name="catNames"
+                  type="checkbox"
+                  :id="catName[0]"
+                  name="catNames"
                   @change-action="setFilters"
-                  :label-text="catName[1]"
+                  :text="catName[1]"
                 ></base-input>
               </li>
             </ul>

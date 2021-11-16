@@ -23,6 +23,15 @@ const BasePagination = defineAsyncComponent(() =>
 const BaseToast = defineAsyncComponent(() =>
   import("./components/ui/BaseToast.vue")
 );
+
+const BaseInputText = defineAsyncComponent(() =>
+  import("./components/ui/inputs/BaseInputText.vue")
+);
+
+const BaseInputPassword = defineAsyncComponent(() =>
+  import("./components/ui/inputs/BaseInputPassword.vue")
+);
+
 const app = createApp(App);
 
 app.use(router);
@@ -35,6 +44,9 @@ app.component("base-dialog", BaseDialog);
 app.component("base-spinner", BaseSpinner);
 app.component("base-pagination", BasePagination);
 app.component("base-toast", BaseToast);
+// inputs
+app.component("BaseInputText", BaseInputText);
+app.component("BaseInputPassword", BaseInputPassword);
 
 app.provide("StringFormat", StringFormat);
 app.provide("BASIC_DATA", BasicData);
