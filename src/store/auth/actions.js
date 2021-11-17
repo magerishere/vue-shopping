@@ -13,6 +13,7 @@ export default {
   async register(context, payload) {
     // data
     const userData = {
+      role: payload.get("role"),
       name: payload.get("userName"),
       email: payload.get("email"),
       password: payload.get("password"),
@@ -30,6 +31,7 @@ export default {
     context.dispatch("errorsHandler", responseData, { root: true });
     // success
     localStorage.setItem("userId", responseData.userId);
+    localStorage.setItem("userRole", responseData.userRole);
     localStorage.setItem("token", responseData.token);
     context.commit("setUser", responseData);
     Api.defaults.headers.common["Authorization"] =
@@ -39,8 +41,9 @@ export default {
   tryLogin(context) {
     // data
     const userId = localStorage.getItem("userId");
+    const userRole = localStorage.getItem("userRole");
     const token = localStorage.getItem("token");
-    const userData = { userId, token };
+    const userData = { userId, userRole, token };
     context.commit("setUser", userData);
   },
   async logout(context) {

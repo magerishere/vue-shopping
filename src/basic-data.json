@@ -1,4 +1,10 @@
 {
+  "productCatNames": [
+    ["digital", "دیجیتال"],
+    ["cloth", "پارچه"],
+    ["homeAccessories", "لوازم خانگی"],
+    ["Food", "خوراکی"]
+  ],
   "blogCatNames": [
     ["pc", "کامپیوتر"],
     ["game", "بازی"],

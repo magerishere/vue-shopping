@@ -25,6 +25,23 @@
             </h5>
           </li>
           <hr />
+          <template v-if="isSeller">
+            <li>
+              <h5 class="filter-title">
+                <base-button link mode="outline" :to="userProductsLink"
+                  >محصولات من</base-button
+                >
+              </h5>
+            </li>
+            <li>
+              <h5 class="filter-title">
+                <base-button link mode="outline" :to="productCreateLink"
+                  >ایجاد محصول</base-button
+                >
+              </h5>
+            </li>
+            <hr />
+          </template>
         </ul>
       </nav>
     </base-card>
@@ -36,6 +53,9 @@ export default {
   name: "BlogsSidebar",
 
   computed: {
+    isSeller() {
+      return this.$store.getters["auth/isSeller"];
+    },
     dashBoardLink() {
       return { name: "dashboard" };
     },
@@ -44,6 +64,12 @@ export default {
     },
     blogCreateLink() {
       return { name: "blogCreate" };
+    },
+    userProductsLink() {
+      return { name: "userProducts" };
+    },
+    productCreateLink() {
+      return { name: "productCreate" };
     },
   },
 };

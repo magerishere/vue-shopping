@@ -1,7 +1,8 @@
 <template>
   <tr>
     <td>
-      <BaseInput :text="id" type="checkbox" name="blog" :id="id" />
+      <BaseInputCheckbox :text="id" name="blog" :id="id" v-model="selectedId" />
+      <!-- <BaseInput :text="id" type="checkbox" name="blog" :id="id" /> -->
     </td>
 
     <td><img :src="image" alt="Blog Image" loading="lazy" /></td>
@@ -10,9 +11,6 @@
     <td>{{ StringFormat(content, 30) }}</td>
     <td class="actions">
       <base-button link :to="editBlogLink" mode="small">مشاهده</base-button>
-      <base-button mode="danger flat small" @click="removeBlog(id)"
-        >حذف</base-button
-      >
     </td>
   </tr>
 </template>
@@ -20,6 +18,7 @@
 <script>
 import { computed } from "vue";
 export default {
+  emits: ["update:modelValue"],
   inject: {
     StringFormat: {
       // helper function
@@ -28,6 +27,10 @@ export default {
     },
   },
   props: {
+    modelValue: {
+      type: null,
+      required: true,
+    },
     id: {
       type: Number,
       required: true,
@@ -50,15 +53,15 @@ export default {
     },
   },
   setup(props, context) {
+    const selectedId = computed({
+      get: () => props.modelValue,
+      set: (value) => context.emit("update:modelValue", value),
+    });
     const editBlogLink = computed(() => {
       return { name: "blogEdit", params: { id: props.id } };
     });
 
-    const removeBlog = () => {
-      context.emit("remove-blog", props.id);
-    };
-
-    return { editBlogLink, removeBlog };
+    return { editBlogLink, selectedId };
   },
 };
 </script>

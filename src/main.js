@@ -32,6 +32,14 @@ const BaseInputPassword = defineAsyncComponent(() =>
   import("./components/ui/inputs/BaseInputPassword.vue")
 );
 
+const BaseInputCheckbox = defineAsyncComponent(() =>
+  import("./components/ui/inputs/BaseInputCheckbox.vue")
+);
+
+const BaseInputRadio = defineAsyncComponent(() =>
+  import("./components/ui/inputs/BaseInputRadio.vue")
+);
+
 const app = createApp(App);
 
 app.use(router);
@@ -47,6 +55,8 @@ app.component("base-toast", BaseToast);
 // inputs
 app.component("BaseInputText", BaseInputText);
 app.component("BaseInputPassword", BaseInputPassword);
+app.component("BaseInputCheckbox", BaseInputCheckbox);
+app.component("BaseInputRadio", BaseInputRadio);
 
 app.provide("StringFormat", StringFormat);
 app.provide("BASIC_DATA", BasicData);

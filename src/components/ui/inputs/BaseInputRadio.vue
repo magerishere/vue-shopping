@@ -1,18 +1,16 @@
 <template>
-  <div>
-    <label :for="id">
-      <input
-        type="checkbox"
-        :id="id"
-        :name="name"
-        :value="id"
-        class="checkbox"
-        v-model="model"
-      />
-      <span class="checkbox"></span>
-      {{ text }}
-    </label>
-  </div>
+  <label :for="id">
+    <input
+      type="radio"
+      :id="id"
+      :value="id"
+      class="radio"
+      v-model="model"
+      :name="name"
+    />
+    <span class="radio"></span>
+    {{ text }}
+  </label>
 </template>
 
 <script>
@@ -50,31 +48,29 @@ export default {
 </script>
 
 <style scoped>
-div {
-  position: relative;
-}
 label {
   cursor: pointer;
   margin-right: 1.5rem;
   font-size: 1rem;
 }
-input[type="checkbox"] {
+input[type="radio"] {
   position: absolute;
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.checkbox {
+.radio {
   position: absolute;
   width: 1rem;
   height: 1rem;
   top: 4px;
   right: 0;
+  border-radius: 50%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 }
 
-.checkbox:after {
+.radio:after {
   content: "";
   position: absolute;
   display: none;
@@ -89,7 +85,7 @@ input[type="checkbox"] {
   transform: rotate(45deg);
 }
 
-input[type="checkbox"]:checked ~ .checkbox:after {
+input[type="radio"]:checked ~ .radio:after {
   display: block;
 }
 </style>

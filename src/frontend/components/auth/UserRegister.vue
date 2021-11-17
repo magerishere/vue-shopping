@@ -35,6 +35,12 @@
         errorMsg="رمزعبور معتبر وارد کنید (حداقل 8 کاراکتر)"
         :confirmErr="confirmValidError"
       />
+      <BaseInputCheckbox
+        id="role"
+        name="role"
+        text="من فروشنده هستم"
+        v-model="inputs.role.val"
+      />
 
       <div class="actions">
         <base-button>ثبت نام</base-button>
@@ -76,6 +82,9 @@ export default {
           required: true,
           min: 8,
         },
+      },
+      role: {
+        val: false, // customer as default
       },
     });
     // form options
