@@ -11,75 +11,42 @@
     >
     </base-dialog>
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
-      <div class="mb-3">
-        <label for="catName" class="form-label">دسته بندی</label>
-        <select
-          id="catName"
-          class="form-select"
-          :class="{ error: !inputs.catName.isValid }"
-          ref="catNameSelect"
-          @change="setCatName"
-          value=""
-          @blur="confirmValidError"
-        >
-          <option
-            v-for="catName in BASIC_DATA.blogCatNames"
-            :key="catName[0]"
-            :value="catName"
-          >
-            {{ catName[1] }}
-          </option>
-        </select>
-        <div v-if="!inputs.catName.isValid" class="form-text-error">
-          دسته بندی مطلب را انتخاب کنید
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="title" class="form-label">عنوان</label>
-        <input
-          type="text"
-          class="form-control"
-          :class="{ error: !inputs.title.isValid }"
-          id="title"
-          v-model.trim="inputs.title.val"
-          @blur="confirmValidError"
-        />
-        <div v-if="!inputs.title.isValid" class="form-text-error">
-          عنوان مطلب را وارد کنید
-        </div>
-      </div>
+      <BaseSelect
+        id="catNames"
+        v-model="inputs.catNames.val"
+        text="دسته بندی"
+        :options="BASIC_DATA.blogCatNames"
+        :isValid="inputs.catNames.isValid"
+        errorMsg="دسته بندی مطلب را انتخاب کنید"
+        :confirmErr="confirmValidError"
+      />
+      <BaseInputText
+        id="title"
+        v-model.trim="inputs.title.val"
+        text="عنوان"
+        :isValid="inputs.title.isValid"
+        errorMsg="عنوان مطلب را وارد کنید"
+        :confirmErr="confirmValidError"
+      />
 
-      <div class="mb-3">
-        <label for="image" class="form-label"
-          >عکس <small>(حداکثر 1 مگابایت)</small></label
-        >
-        <input
-          class="form-control form-control-sm"
-          :class="{ error: !inputs.image.isValid }"
-          id="image"
-          type="file"
-          @change="setImage"
-          @blur="confirmValidError"
-        />
-        <div v-if="!inputs.image.isValid" class="form-text-error">
-          عکس مطلب را بارگذاری کنید
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="content" class="form-label">محتوا</label>
-        <textarea
-          id="content"
-          cols="30"
-          rows="10"
-          class="form-control"
-          :class="{ error: !inputs.content.isValid }"
-          v-model.trim="inputs.content.val"
-          @blur="confirmValidError"
-        ></textarea>
-        <div v-if="!inputs.content.isValid" class="form-text-error">
-          محتوای مطلب را وارد کنید
-        </div>
-      </div>
+      <base-input-file
+        id="image"
+        @change="setImage"
+        :isValid="inputs.image.isValid"
+        errorMsg="عکس مطلب را بارگذاری کنید"
+        :confirmErr="confirmValidError"
+        >عکس <small>(حداکثر 1 مگابایت)</small></base-input-file
+      >
+
+      <BaseTextarea
+        id="content"
+        text="محتوا"
+        v-model.trim="inputs.content.val"
+        :isValid="inputs.content.isValid"
+        errorMsg="محتوای مطلب را وارد کنید"
+        :confirmErr="confirmValidError"
+      />
+
       <div class="text-center">
         <base-button>ثبت</base-button>
       </div>
@@ -101,11 +68,8 @@ export default {
   },
   setup() {
     const inputs = reactive({
-      catNameKey: {
-        val: "",
-      },
-      catName: {
-        val: "",
+      catNames: {
+        val: [],
         isValid: true,
         validate: {
           required: true,
@@ -135,12 +99,6 @@ export default {
       },
     });
 
-    function setCatName(event) {
-      const catKeyAndName = event.target.value.split(",");
-      inputs.catNameKey.val = catKeyAndName[0];
-      inputs.catName.val = catKeyAndName[1];
-    }
-
     function setImage(event) {
       inputs.image.val = event.target.files[0];
       inputs.image.isFile = true;
@@ -157,7 +115,6 @@ export default {
       confirmErrors,
       setImage,
       options,
-      setCatName,
     };
   },
 };

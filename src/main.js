@@ -40,6 +40,18 @@ const BaseInputRadio = defineAsyncComponent(() =>
   import("./components/ui/inputs/BaseInputRadio.vue")
 );
 
+const BaseSelect = defineAsyncComponent(() =>
+  import("./components/ui/BaseSelect.vue")
+);
+
+const BaseInputFile = defineAsyncComponent(() =>
+  import("./components/ui/inputs/BaseInputFile.vue")
+);
+
+const BaseTextarea = defineAsyncComponent(() =>
+  import("./components/ui/BaseTextarea.vue")
+);
+
 const app = createApp(App);
 
 app.use(router);
@@ -52,11 +64,14 @@ app.component("base-dialog", BaseDialog);
 app.component("base-spinner", BaseSpinner);
 app.component("base-pagination", BasePagination);
 app.component("base-toast", BaseToast);
+app.component("BaseSelect", BaseSelect);
+app.component("BaseTextarea", BaseTextarea);
 // inputs
 app.component("BaseInputText", BaseInputText);
 app.component("BaseInputPassword", BaseInputPassword);
 app.component("BaseInputCheckbox", BaseInputCheckbox);
 app.component("BaseInputRadio", BaseInputRadio);
+app.component("BaseInputFile", BaseInputFile);
 
 app.provide("StringFormat", StringFormat);
 app.provide("BASIC_DATA", BasicData);

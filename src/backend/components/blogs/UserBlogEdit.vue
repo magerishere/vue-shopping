@@ -12,64 +12,41 @@
     </base-dialog>
     <img :src="inputs.image.oldVal" alt="Blog Image" loading="lazy" />
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
-      <div class="mb-3">
-        <label for="catName" class="form-label">دسته بندی</label>
-        <select id="catName" class="form-select" @change="setCatName">
-          <option
-            v-for="catName in BASIC_DATA.blogCatNames"
-            :key="catName[0]"
-            :value="catName"
-            :selected="inputs.catNameKey.val === catName[0]"
-          >
-            {{ catName[1] }}
-          </option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="title" class="form-label">عنوان</label>
-        <input
-          type="text"
-          class="form-control"
-          :class="{ error: !inputs.title.isValid }"
-          id="title"
-          v-model.trim="inputs.title.val"
-          @blur="confirmValidError"
-        />
-        <div v-if="!inputs.title.isValid" class="form-text-error">
-          عنوان مطلب را وارد کنید
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="image" class="form-label"
-          >عکس <small>(حداکثر 1 مگابایت)</small>
-        </label>
-        <input
-          class="form-control form-control-sm"
-          :class="{ error: !inputs.image.isValid }"
-          id="image"
-          type="file"
-          @change="setImage"
-          @blur="confirmValidError"
-        />
-        <div v-if="!inputs.image.isValid" class="form-text-error">
-          عکس مطلب را بارگذاری کنید
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="content" class="form-label">محتوا</label>
-        <textarea
-          id="content"
-          cols="30"
-          rows="10"
-          class="form-control"
-          :class="{ error: !inputs.content.isValid }"
-          v-model.trim="inputs.content.val"
-          @blur="confirmValidError"
-        ></textarea>
-        <div v-if="!inputs.content.isValid" class="form-text-error">
-          محتوای مطلب را وارد کنید
-        </div>
-      </div>
+      <BaseSelect
+        id="catNames"
+        v-model="inputs.catNames.val"
+        text="دسته بندی"
+        :options="BASIC_DATA.blogCatNames"
+        :isValid="inputs.catNames.isValid"
+        errorMsg="دسته بندی مطلب را انتخاب کنید"
+        :confirmErr="confirmValidError"
+      />
+      <BaseInputText
+        id="title"
+        v-model.trim="inputs.title.val"
+        text="عنوان"
+        :isValid="inputs.title.isValid"
+        errorMsg="عنوان مطلب را وارد کنید"
+        :confirmErr="confirmValidError"
+      />
+
+      <base-input-file
+        id="image"
+        @change="setImage"
+        :isValid="inputs.image.isValid"
+        errorMsg="عکس مطلب را بارگذاری کنید"
+        :confirmErr="confirmValidError"
+        >عکس <small>(حداکثر 1 مگابایت)</small></base-input-file
+      >
+
+      <BaseTextarea
+        id="content"
+        text="محتوا"
+        v-model.trim="inputs.content.val"
+        :isValid="inputs.content.isValid"
+        errorMsg="محتوای مطلب را وارد کنید"
+        :confirmErr="confirmValidError"
+      />
       <div class="text-center">
         <base-button>به روزرسانی</base-button>
       </div>
@@ -105,10 +82,7 @@ export default {
       id: {
         val: props.id,
       },
-      catNameKey: {
-        val: "",
-      },
-      catName: {
+      catNames: {
         val: "",
         isValid: true,
         validate: {
@@ -149,18 +123,12 @@ export default {
     });
 
     watch(blog, (b) => {
-      inputs.catNameKey.val = b.catNameKey;
-      inputs.catName.val = b.catName;
+      console.log(b.catNames);
+      inputs.catNames.val = b.catNames;
       inputs.title.val = b.title;
       inputs.content.val = b.content;
       inputs.image.oldVal = b.image;
     });
-
-    function setCatName(event) {
-      const catKeyAndName = event.target.value.split(",");
-      inputs.catNameKey.val = catKeyAndName[0];
-      inputs.catName.val = catKeyAndName[1];
-    }
 
     function setImage(event) {
       inputs.image.val = event.target.files[0];
@@ -179,7 +147,6 @@ export default {
       confirmErrors,
       setImage,
       options,
-      setCatName,
     };
   },
 };

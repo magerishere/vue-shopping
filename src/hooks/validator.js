@@ -4,7 +4,12 @@ export default function formValidator(data) {
     if (data[key].validate) {
       // required
       if (data[key].validate.required) {
-        if (data[key].val === "" || data[key].val === null) {
+        // array data
+        if (Array.isArray(data[key].val) && data[key].val.length === 0) {
+          data[key].isValid = false;
+          formIsValid = false;
+          // string & number data
+        } else if (data[key].val === "" || data[key].val === null) {
           data[key].isValid = false;
           formIsValid = false;
         }
