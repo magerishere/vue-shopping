@@ -4,7 +4,6 @@ import store from "./store/index";
 import App from "./App.vue";
 import BaseCard from "./components/ui/BaseCard.vue";
 import BaseButton from "./components/ui/BaseButton.vue";
-import BaseInput from "./components/ui/BaseInput.vue";
 import StringFormat from "./helpers/StringFormat";
 import BasicData from "./basic-data.json";
 
@@ -24,6 +23,7 @@ const BaseToast = defineAsyncComponent(() =>
   import("./components/ui/BaseToast.vue")
 );
 
+// start inputs
 const BaseInputText = defineAsyncComponent(() =>
   import("./components/ui/inputs/BaseInputText.vue")
 );
@@ -40,12 +40,17 @@ const BaseInputRadio = defineAsyncComponent(() =>
   import("./components/ui/inputs/BaseInputRadio.vue")
 );
 
-const BaseSelect = defineAsyncComponent(() =>
-  import("./components/ui/BaseSelect.vue")
-);
-
 const BaseInputFile = defineAsyncComponent(() =>
   import("./components/ui/inputs/BaseInputFile.vue")
+);
+
+const BaseInputNumber = defineAsyncComponent(() =>
+  import("./components/ui/inputs/BaseInputNumber.vue")
+);
+// end inputs
+
+const BaseSelect = defineAsyncComponent(() =>
+  import("./components/ui/BaseSelect.vue")
 );
 
 const BaseTextarea = defineAsyncComponent(() =>
@@ -59,19 +64,20 @@ app.use(store);
 
 app.component("base-card", BaseCard);
 app.component("base-button", BaseButton);
-app.component("BaseInput", BaseInput);
 app.component("base-dialog", BaseDialog);
 app.component("base-spinner", BaseSpinner);
 app.component("base-pagination", BasePagination);
 app.component("base-toast", BaseToast);
 app.component("BaseSelect", BaseSelect);
 app.component("BaseTextarea", BaseTextarea);
-// inputs
+// start inputs
 app.component("BaseInputText", BaseInputText);
 app.component("BaseInputPassword", BaseInputPassword);
 app.component("BaseInputCheckbox", BaseInputCheckbox);
 app.component("BaseInputRadio", BaseInputRadio);
 app.component("BaseInputFile", BaseInputFile);
+app.component("BaseInputNumber", BaseInputNumber);
+// end inputs
 
 app.provide("StringFormat", StringFormat);
 app.provide("BASIC_DATA", BasicData);

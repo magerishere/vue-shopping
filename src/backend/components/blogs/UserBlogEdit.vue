@@ -110,6 +110,7 @@ export default {
         isFile: false,
       },
     });
+
     const options = useOptions();
     const blogId = reactive({
       id: { val: props.id },

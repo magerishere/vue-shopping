@@ -4,7 +4,7 @@
     <input
       type="password"
       :id="id"
-      v-model="model"
+      v-model.trim="model"
       class="form-control"
       :class="{ error: !isValid }"
       @blur="confirmErr"
@@ -38,7 +38,10 @@ export default {
     },
     errorMsg: {
       type: String,
-      required: true,
+      required: false,
+      default: (props) => {
+        return props.text + " " + "الزامیست";
+      },
     },
     confirmErr: {
       type: Function,

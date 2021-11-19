@@ -36,7 +36,10 @@ export default {
     },
     errorMsg: {
       type: String,
-      required: true,
+      required: false,
+      default: (props) => {
+        return props.text + " " + "را بارگذاری کنید";
+      },
     },
     confirmErr: {
       type: Function,

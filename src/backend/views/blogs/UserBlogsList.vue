@@ -41,7 +41,7 @@
       </thead>
       <transition-group appear tag="tbody" name="blog-list">
         <user-blog-item
-          v-for="blog in userBlogs"
+          v-for="blog in userBlogs.data"
           :key="blog.id"
           :id="blog.id"
           :catName="blog.catName"
@@ -58,7 +58,7 @@
     </div>
     <base-pagination
       v-if="hasUserBlogs && !options.isLoading"
-      :pages="pages"
+      :pages="userBlogs.links"
       @paginator="paginator"
     ></base-pagination>
   </div>
@@ -90,16 +90,14 @@ export default {
       return store.getters["blog/userBlogs"];
     });
 
+    console.log(userBlogs.value, "userBlogs");
+
     const hasUserBlogs = computed(() => {
       return store.getters["blog/hasUserBlogs"];
     });
 
     const blogCreateLink = computed(() => {
       return { name: "blogCreate" };
-    });
-
-    const pages = computed(() => {
-      return store.getters["blog/userPages"];
     });
 
     const blogIds = ref([]);
@@ -145,7 +143,7 @@ export default {
           val: queryParamPage,
         },
       };
-      useForm(userBlogsData, "blog/getUserBlogs", options);
+      useForm(userBlogsData, "blog/getBlogs", options);
     }
 
     const { confirmErrors } = useErrors(null, options);
@@ -154,7 +152,6 @@ export default {
       userBlogs,
       hasUserBlogs,
       blogCreateLink,
-      pages,
       removeBlog,
       options,
       paginator,

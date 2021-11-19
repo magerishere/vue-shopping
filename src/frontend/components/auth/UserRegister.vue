@@ -12,33 +12,34 @@
     </base-dialog>
     <form @submit.prevent="submitForm">
       <BaseInputText
-        text="نام کاربری"
+        :text="inputs.userName.text"
         id="userName"
         v-model.trim="inputs.userName.val"
         :isValid="inputs.userName.isValid"
-        errorMsg="نام کاربری خود را وارد کنید"
+        :errorMsg="inputs.userName.validate.message"
         :confirmErr="confirmValidError"
       />
       <BaseInputText
-        text="ایمیل"
+        :text="inputs.email.text"
         id="email"
         v-model.trim="inputs.email.val"
         :isValid="inputs.email.isValid"
-        errorMsg="ما ایمیل شمارا محفوظ نگه میداریم"
+        :errorMsg="inputs.email.validate.message"
         :confirmErr="confirmValidError"
+        placeholder="ما ایمیل شمارا محفوظ نگه میداریم"
       />
       <BaseInputPassword
-        text="رمزعبور"
+        :text="inputs.password.text"
         id="password"
         v-model.trim="inputs.password.val"
         :isValid="inputs.password.isValid"
-        errorMsg="رمزعبور معتبر وارد کنید (حداقل 8 کاراکتر)"
+        :errorMsg="inputs.password.validate.message"
         :confirmErr="confirmValidError"
       />
       <BaseInputCheckbox
         id="role"
         name="role"
-        text="من فروشنده هستم"
+        :text="inputs.role.text"
         v-model="inputs.role.val"
       />
 
@@ -62,6 +63,7 @@ export default {
     const inputs = reactive({
       userName: {
         val: "",
+        text: "نام کاربری",
         isValid: true,
         validate: {
           required: true,
@@ -69,6 +71,7 @@ export default {
       },
       email: {
         val: "",
+        text: "ایمیل",
         isValid: true,
         validate: {
           required: true,
@@ -77,6 +80,7 @@ export default {
       },
       password: {
         val: "",
+        text: "رمزعبور",
         isValid: true,
         validate: {
           required: true,
@@ -85,6 +89,7 @@ export default {
       },
       role: {
         val: false, // customer as default
+        text: "من فروشنده هستم",
       },
     });
     // form options

@@ -1,18 +1,18 @@
 export default {
   blogs(state) {
-    return state.blogs.data;
+    return state.blogs;
   },
   hasBlogs(state) {
     return state.blogs.data && state.blogs.data.length > 0;
   },
-  pages(state) {
-    //  if have no pages
-    if (state.blogs.to === state.blogs.total) {
-      return [];
-    }
-    const linksLength = state.blogs.links.length;
-    return state.blogs.links.slice(1, linksLength - 1);
-  },
+  // pages(state) {
+  //   //  if have no pages
+  //   if (state.blogs.to === state.blogs.total) {
+  //     return [];
+  //   }
+  //   const linksLength = state.blogs.links.length;
+  //   return state.blogs.links.slice(1, linksLength - 1);
+  // },
 
   blog(state) {
     return state.blog;
@@ -21,23 +21,15 @@ export default {
     return !!state.blog;
   },
   userBlogs(state) {
-    return state.userBlogs.data;
+    return state.userBlogs;
   },
   hasUserBlogs(state) {
     return state.userBlogs.data && state.userBlogs.data.length > 0;
-  },
-  userPages(state) {
-    //  if have no pages
-    if (state.userBlogs.to === state.userBlogs.total) {
-      return [];
-    }
-    const linksLength = state.userBlogs.links.length;
-    return state.userBlogs.links.slice(1, linksLength - 1);
   },
   userBlog(state) {
     return state.userBlog;
   },
   hasUserBlog(state) {
-    return !!state.userBlog;
+    return state.userBlog.data && state.userBlog.data.length > 0;
   },
 };

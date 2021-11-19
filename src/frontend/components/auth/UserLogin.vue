@@ -12,19 +12,19 @@
     </base-dialog>
     <form @submit.prevent="submitForm">
       <BaseInputText
-        text="ایمیل"
         id="email"
+        :text="inputs.email.text"
         v-model.trim="inputs.email.val"
         :isValid="inputs.email.isValid"
-        errorMsg="ایمیل معتبر وارد کنید"
+        :errorMsg="inputs.email.validate.message"
         :confirmErr="confirmValidError"
       />
       <BaseInputPassword
-        text="رمزعبور"
         id="password"
+        :text="inputs.password.text"
         v-model.trim="inputs.password.val"
         :isValid="inputs.password.isValid"
-        errorMsg="رمزعبور خودرا وارد کنید"
+        :errorMsg="inputs.password.validate.message"
         :confirmErr="confirmValidError"
       />
 
@@ -47,6 +47,7 @@ export default {
     const inputs = reactive({
       email: {
         val: "",
+        text: "ایمیل",
         isValid: true,
         validate: {
           required: true,
@@ -55,10 +56,10 @@ export default {
       },
       password: {
         val: "",
+        text: "رمزعبور",
         isValid: true,
         validate: {
           required: true,
-          min: 8,
         },
       },
     });

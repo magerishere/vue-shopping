@@ -47,7 +47,7 @@ export default {
   props: {
     id: {
       type: Number,
-      requied: true,
+      required: true,
     },
   },
   setup(props) {

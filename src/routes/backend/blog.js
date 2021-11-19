@@ -14,6 +14,7 @@ export default [
     component: () => import("@/backend/views/blogs/UserBlogsList.vue"),
     meta: {
       title: "مطالب من",
+      isAuth: true,
     },
   },
   {

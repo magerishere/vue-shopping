@@ -22,7 +22,7 @@
       />
       <BaseInputText
         id="title"
-        v-model.trim="inputs.title.val"
+        v-model="inputs.title.val"
         text="عنوان"
         :isValid="inputs.title.isValid"
         errorMsg="عنوان مطلب را وارد کنید"
@@ -41,7 +41,7 @@
       <BaseTextarea
         id="content"
         text="محتوا"
-        v-model.trim="inputs.content.val"
+        v-model="inputs.content.val"
         :isValid="inputs.content.isValid"
         errorMsg="محتوای مطلب را وارد کنید"
         :confirmErr="confirmValidError"

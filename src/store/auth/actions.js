@@ -53,8 +53,10 @@ export default {
     // errors
     context.dispatch("errorsHandler", responseData, { root: true });
     // success
-    localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("token");
+
     context.commit("setUser", responseData);
     router.replace("/");
   },

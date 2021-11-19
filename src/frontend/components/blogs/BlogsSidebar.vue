@@ -79,6 +79,7 @@ export default {
       },
       sort: { val: "desc" },
     });
+
     watch(filters, () => {
       console.log("changed");
       applyFilters();

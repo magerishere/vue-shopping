@@ -1,6 +1,6 @@
 <template>
   <header>
-    <nav>
+    <nav class="container">
       <ul>
         <li><base-button link to="/products">محصولات</base-button></li>
         <li><base-button link to="/blogs">بلاگ</base-button></li>
@@ -38,7 +38,7 @@ export default {
 <style scoped>
 header {
   background-color: darkviolet;
-  padding: 0 6rem;
+  /* padding: 0 6rem; */
 }
 
 ul {

@@ -1,10 +1,13 @@
 import axios from "axios";
 
-const Api = axios;
-
-Api.defaults.baseURL = "http://127.0.0.1:8000/api";
-
 const token = localStorage.getItem("token");
-Api.defaults.headers.common["Authorization"] = "Bearer " + token;
+
+const Api = axios.create({
+  baseURL: "http://127.0.0.1:8000/api",
+  headers: {
+    // Accept: "application/json",
+    Authorization: "Bearer " + token,
+  },
+});
 
 export default Api;

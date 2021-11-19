@@ -1,87 +1,88 @@
-import Api from "@/Api";
-import router from "@/router";
 export default {
+  getBlogs(context, payload) {
+    const page = payload.get("page");
+    const data = {
+      url: "/blogs?" + page,
+      commit: "blog/setBlogs",
+    };
+    return context.dispatch("get", data, { root: true });
+  },
   async addBlog(context, payload) {
-    const blogData = payload;
-    const response = await Api.post("/blog", blogData);
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    router.push("/dashboard/blogs");
-    context.commit("setToastStatus", "success", { root: true });
+    const data = {
+      data: payload,
+      url: "/blog",
+      redirect: { name: "userBlogs" },
+      success: true,
+    };
+    return context.dispatch("post", data, { root: true });
   },
   async editBlog(context, payload) {
-    const blogData = payload;
-    blogData.append("_method", "patch");
-    const response = await Api.post(`/blog/${blogData.get("id")}`, blogData);
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    router.replace({ name: "userBlogs" });
+    const data = {
+      data: payload,
+      url: "/blog/" + payload.get("id"),
+      redirect: { name: "userBlogs" },
+      success: true,
+    };
+    return context.dispatch("patch", data, { root: true });
   },
   async removeBlog(context, payload) {
-    const blogIds = JSON.parse(payload.get("ids"));
-    const response = await Api.post(`blog`, { blogIds, _method: "delete" });
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    const userBlogs = context.state["userBlogs"];
-    for (let i = 0; i < blogIds.length; i++) {
-      const indexCurrentBlog = userBlogs.data.findIndex(
-        (blog) => blog.id == blogIds[i]
-      );
-      console.log(i + ":" + blogIds[i] + "index" + indexCurrentBlog);
-      userBlogs.data.splice(indexCurrentBlog, 1);
-    }
-    context.commit("setToastStatus", "success", { root: true });
+    payload.append("_method", "delete");
+    const data = {
+      data: payload,
+      url: "/blog",
+      state: "blog/userBlogs",
+      commit: "blog/setUserBlogs",
+    };
+    return context.dispatch("delete", data, { root: true });
   },
-  async getBlogs(context, payload) {
-    const page = payload.get("page");
-    const response = await Api.get("/blogs" + "?" + page);
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    context.commit("setBlogs", responseData);
-  },
+
   async getBlog(context, payload) {
     const blogId = payload.get("id");
-    const response = await Api.get("/blog/" + blogId);
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    context.commit("setBlog", responseData);
+    const data = {
+      url: "/blog/" + blogId,
+      commit: "blog/setBlog",
+    };
+    return context.dispatch("get", data, { root: true });
   },
-  async setOrder(context, payload) {
-    const orderData = payload;
-    const response = await Api.post("/blogs", orderData);
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    context.commit("setBlogs", responseData);
-  },
+
   async setFilters(context, payload) {
-    const filtersData = payload;
-    const response = await Api.post("/blogs", filtersData);
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    context.commit("setBlogs", responseData);
+    console.log("filtesr");
+    const data = {
+      data: payload,
+      url: "/blogs",
+      commit: "blog/setBlogs",
+    };
+    return context.dispatch("post", data, { root: true });
   },
   async getUserBlogs(context, payload) {
+    console.log("getUserBlogs");
     const page = payload.get("page");
-    const response = await Api.get("/blogs/user" + "?" + page);
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    context.commit("setUserBlogs", responseData);
+    const data = {
+      url: "/blogs/user" + "?" + page,
+      commit: "blog/setUserBlogs",
+    };
+    return context.dispatch("get", data, { root: true });
   },
   async getUserBlog(context, payload) {
     const blogId = payload.get("id");
-    const response = await Api.get(`/blog/user/${blogId}/edit`);
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    context.commit("setUserBlog", responseData);
+    const data = {
+      url: "/blog/user/" + blogId + "/edit",
+      commit: "blog/setUserBlog",
+    };
+    return context.dispatch("get", data, { root: true });
   },
   async likeBlog(context, payload) {
     const blogId = payload.get("blogId");
-    const url = `/blog/${blogId}/like`;
-    return context.dispatch("likesAndDislikes", url, { root: true });
+    const data = {
+      url: "/blog/" + blogId + "/like",
+    };
+    return context.dispatch("post", data, { root: true });
   },
   async dislikeBlog(context, payload) {
     const blogId = payload.get("blogId");
-    const url = `/blog/${blogId}/dislike`;
-    return context.dispatch("likesAndDislikes", url, { root: true });
+    const data = {
+      url: "/blog/" + blogId + "/dislike",
+    };
+    return context.dispatch("post", data, { root: true });
   },
 };

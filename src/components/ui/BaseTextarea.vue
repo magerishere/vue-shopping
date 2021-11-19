@@ -48,7 +48,10 @@ export default {
     },
     errorMsg: {
       type: String,
-      required: true,
+      required: false,
+      default: (props) => {
+        return props.text + " " + "را وارد کنید";
+      },
     },
     confirmErr: {
       type: Function,

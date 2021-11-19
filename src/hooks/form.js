@@ -19,10 +19,8 @@ async function submitForm(
   const formData = new FormData();
   for (const key in data) {
     // if file upload then append to form data
-    if ("isFile" in data[key]) {
-      if (data[key].isFile) {
-        formData.append(key, data[key].val);
-      }
+    if (data[key].isFile) {
+      formData.append(key, data[key].val);
     } else {
       // array need to be json encode
       if (Array.isArray(data[key].val)) {
@@ -41,7 +39,7 @@ async function submitForm(
     }
   }
   try {
-    await store.dispatch(dispatch, formData);
+    await store.dispatch(dispatch, formData, options);
     options.done = true;
   } catch (err) {
     options.errors = err.message.split(",");

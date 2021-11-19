@@ -4,9 +4,9 @@
       <slot>{{ text }}</slot>
     </label>
     <input
-      type="text"
+      type="number"
       :id="id"
-      v-model.trim="model"
+      v-model.trim.number="model"
       class="form-control"
       :class="{ error: !isValid }"
       @blur="confirmErr"

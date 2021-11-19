@@ -7,7 +7,7 @@
         :name="name"
         :value="id"
         class="checkbox"
-        v-model="model"
+        v-model.trim="model"
       />
       <span class="checkbox"></span>
       {{ text }}

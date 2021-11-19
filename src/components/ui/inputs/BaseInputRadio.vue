@@ -5,7 +5,7 @@
       :id="id"
       :value="id"
       class="radio"
-      v-model="model"
+      v-model.trim="model"
       :name="name"
     />
     <span class="radio"></span>

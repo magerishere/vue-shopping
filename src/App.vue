@@ -59,10 +59,12 @@ body {
   overflow-x: hidden;
   height: 100vh;
   position: relative;
+  font-family: Vazir, sans-serif;
 }
-
-article {
-  padding: 0 7rem;
+@media screen and (min-width: 768px) {
+  article {
+    padding: 0 7rem;
+  }
 }
 
 ul {
@@ -113,5 +115,9 @@ ul {
   margin-top: 0.25 rem;
   font-size: 0.875em;
   color: red;
+}
+
+.row {
+  width: 100%;
 }
 </style>

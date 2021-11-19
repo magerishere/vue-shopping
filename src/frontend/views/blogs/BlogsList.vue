@@ -1,52 +1,56 @@
 <template>
-  <div class="row">
-    <blogs-sidebar @apply-filters="applyFilters"></blogs-sidebar>
-    <base-dialog
-      :show="!!options.errors"
-      title="خطایی رخ داد"
-      :messages="options.errors"
-      @close="confirmErrors"
-    >
-    </base-dialog>
-    <base-spinner v-if="options.isLoading"></base-spinner>
-
-    <section class="col-md-9">
-      <transition-group
-        appear
-        tag="ul"
-        name="blog-list"
-        v-if="hasBlogs && !options.isLoading"
-        class="row"
+  <div class="container">
+    <div class="row">
+      <blogs-sidebar @apply-filters="applyFilters"></blogs-sidebar>
+      <base-dialog
+        :show="!!options.errors"
+        title="خطایی رخ داد"
+        :messages="options.errors"
+        @close="confirmErrors"
       >
-        <blog-item
-          v-for="blog in blogs"
-          :key="blog.id"
-          :id="blog.id"
-          :catName="blog.catName"
-          :title="blog.title"
-          :image="blog.image"
-          :content="blog.content"
-          :views="blog.views"
-          :created-at="blog.created_at"
-          :likes="blog.likes_count"
-          :comments="blog.comments_count"
-        >
-        </blog-item>
-      </transition-group>
+      </base-dialog>
+      <base-spinner v-if="options.isLoading"></base-spinner>
 
-      <div class="text-center mt-5" v-if="!hasBlogs && !options.isLoading">
-        <h4 class="mb-5">هیچ مطلبی وجود ندارد. شما اولین پست را ایجاد کنید</h4>
-        <base-button v-if="isAuth" link to="/dashboard/blog/create"
-          >ایجاد مطلب</base-button
+      <section class="col-md-9">
+        <transition-group
+          appear
+          tag="ul"
+          name="blog-list"
+          v-if="hasBlogs && !options.isLoading"
+          class="row mx-1"
         >
-        <base-button v-else link to="/auth">ورود / ثبت نام</base-button>
-      </div>
-      <base-pagination
-        v-if="hasBlogs && !options.isLoading"
-        :pages="pages"
-        @paginator="paginator"
-      ></base-pagination>
-    </section>
+          <blog-item
+            v-for="blog in blogs.data"
+            :key="blog.id"
+            :id="blog.id"
+            :catName="blog.catName"
+            :title="blog.title"
+            :image="blog.image"
+            :content="blog.content"
+            :views="blog.views"
+            :created-at="blog.created_at"
+            :likes="blog.likes_count"
+            :comments="blog.comments_count"
+          >
+          </blog-item>
+        </transition-group>
+
+        <div class="text-center mt-5" v-if="!hasBlogs && !options.isLoading">
+          <h4 class="mb-5">
+            هیچ مطلبی وجود ندارد. شما اولین پست را ایجاد کنید
+          </h4>
+          <base-button v-if="isAuth" link to="/dashboard/blog/create"
+            >ایجاد مطلب</base-button
+          >
+          <base-button v-else link to="/auth">ورود / ثبت نام</base-button>
+        </div>
+        <base-pagination
+          v-if="hasBlogs && !options.isLoading"
+          :pages="blogs.links"
+          @paginator="paginator"
+        ></base-pagination>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -89,9 +93,6 @@ export default {
       return store.getters["blog/hasBlogs"];
     });
 
-    const pages = computed(() => {
-      return store.getters["blog/pages"];
-    });
     const isAuth = computed(() => {
       return store.getters["auth/isAuth"];
     });
@@ -99,6 +100,7 @@ export default {
     // emits
     function applyFilters(filters) {
       useForm(filters, "blog/setFilters", options, true);
+      console.log(options.isLoading);
     }
 
     function paginator(queryParamPage) {
@@ -115,7 +117,6 @@ export default {
     return {
       blogs,
       hasBlogs,
-      pages,
       confirmErrors,
       options,
       isAuth,

@@ -1,6 +1,6 @@
 <template>
   <div class="mb-3">
-    <label :for="id">{{ text }}</label>
+    <label :for="id" class="form-label">{{ text }}</label>
     <select
       :id="id"
       v-model="model"
@@ -42,7 +42,10 @@ export default {
     },
     errorMsg: {
       type: String,
-      required: true,
+      required: false,
+      default: (props) => {
+        return props.text + " " + "را انتخاب کنید";
+      },
     },
     confirmErr: {
       type: Function,
