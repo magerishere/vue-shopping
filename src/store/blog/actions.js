@@ -29,7 +29,7 @@ export default {
     payload.append("_method", "delete");
     const data = {
       data: payload,
-      url: "/blog",
+      url: "/blogs",
       state: "blog/userBlogs",
       commit: "blog/setUserBlogs",
     };
@@ -46,7 +46,6 @@ export default {
   },
 
   async setFilters(context, payload) {
-    console.log("filtesr");
     const data = {
       data: payload,
       url: "/blogs",
@@ -55,7 +54,6 @@ export default {
     return context.dispatch("post", data, { root: true });
   },
   async getUserBlogs(context, payload) {
-    console.log("getUserBlogs");
     const page = payload.get("page");
     const data = {
       url: "/blogs/user" + "?" + page,

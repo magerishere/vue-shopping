@@ -100,7 +100,6 @@ export default {
     // emits
     function applyFilters(filters) {
       useForm(filters, "blog/setFilters", options, true);
-      console.log(options.isLoading);
     }
 
     function paginator(queryParamPage) {

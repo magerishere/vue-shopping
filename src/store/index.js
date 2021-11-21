@@ -35,7 +35,6 @@ const store = createStore({
       const url = payload.url;
       const response = await Api.get(url);
       const responseData = response.data;
-      console.log(response, "response");
       // error handling
       context.dispatch("errorsHandler", responseData);
       // success
@@ -99,7 +98,6 @@ const store = createStore({
      */
     async delete(context, payload) {
       // action
-      console.log("context", context);
       payload.data.append("_method", "delete");
       const data = payload.data;
       const url = payload.url;
@@ -108,6 +106,7 @@ const store = createStore({
       // error handling
       context.dispatch("errorsHandler", responseData);
       // success - remove items from main data
+      console.log(data.get("ids"), "after deleting");
       const ids = JSON.parse(data.get("ids"));
       const state = payload.state;
       const items = context.getters[state];

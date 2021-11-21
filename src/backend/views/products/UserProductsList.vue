@@ -1,28 +1,27 @@
 <template>
   <div>
-    <base-spinner v-if="options.isLoading"></base-spinner>
-    <base-dialog :show="!!options.errors" @close="confirmErrors">
-      <p v-for="error in options.errors" :key="error">{{ error }}</p>
-    </base-dialog>
+    <base-spinner v-if="form.config.isLoading"></base-spinner>
+    <base-dialog
+      :show="!!form.errors.messages"
+      :messages="form.errors.messages"
+      @close="form.errors.confirm"
+    ></base-dialog>
     <base-dialog
       :show="confirmRemove"
       title="هشدار"
+      @close="toggleConfirmRemove"
       mode="danger"
-      @close="confirmRemoveBlog(null)"
-    >
-      <p class="text-center">آیا از انجام این کار مطمئن هستید؟</p>
-      <template #actions>
-        <base-button @click="removeBlog" mode="danger">حذف</base-button>
-      </template>
-    </base-dialog>
+      confirm
+      @confirmed="remove"
+    ></base-dialog>
     <base-button
-      v-if="blogIds.length > 0"
+      v-if="productIds.length > 0"
       mode="danger small"
-      @click="confirmRemoveBlog(null, false)"
+      @click="toggleConfirmRemove"
       >حذف موارد انتخاب شده</base-button
     >
-    <table class="table mt-3" v-if="hasUserBlogs && !options.isLoading">
-      <thead>
+    <base-table v-if="!form.config.isLoading">
+      <template #head>
         <tr>
           <th>
             <BaseInputCheckbox
@@ -31,168 +30,86 @@
               v-model="selectedAll"
             />
           </th>
-
           <th>عکس</th>
           <th>دسته بندی</th>
           <th>عنوان</th>
           <th>محتوا</th>
           <th>عملیات</th>
         </tr>
-      </thead>
-      <transition-group appear tag="tbody" name="blog-list">
-        <user-blog-item
-          v-for="blog in userBlogs"
-          :key="blog.id"
-          :id="blog.id"
-          :catName="blog.catName"
-          :title="blog.title"
-          :image="blog.image"
-          :content="blog.content"
-          v-model="blogIds"
-        ></user-blog-item>
-      </transition-group>
-    </table>
-    <div v-if="!hasUserBlogs && !options.isLoading" class="text-center">
-      <p>هنوز هیچ پستی ندارید.</p>
-      <base-button link :to="blogCreateLink">ایجاد پست</base-button>
-    </div>
-    <base-pagination
-      v-if="hasUserBlogs && !options.isLoading"
-      :pages="pages"
-      @paginator="paginator"
-    ></base-pagination>
+      </template>
+      <template #default>
+        <user-product-item
+          v-for="product in products.data"
+          :key="product.id"
+          :id="product.id"
+          :image="product.image"
+          :catName="product.catName"
+          :title="product.title"
+          :content="product.content"
+          v-model="productIds"
+        ></user-product-item>
+      </template>
+    </base-table>
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
-import UserBlogItem from "../../components/blogs/UserBlogItem.vue";
+import useForm from "@/hooks/form/useForm";
+import UserProductItem from "../../components/products/UserProductItem.vue";
+
 export default {
-  name: "UserBlogsList",
-
+  name: "UserProductsList",
   components: {
-    UserBlogItem,
+    UserProductItem,
   },
-
   setup() {
-    const store = useStore();
-    const options = useOptions();
-
+    const form = useForm();
     onMounted(async () => {
-      await useForm(null, "blog/getUserBlogs", options);
+      await form.submit("product/getUserProducts");
     });
-
-    const userBlogs = computed(() => {
-      return store.getters["blog/userBlogs"];
+    const store = useStore();
+    const products = computed(() => {
+      return store.getters["product/userProducts"];
     });
-
-    const hasUserBlogs = computed(() => {
-      return store.getters["blog/hasUserBlogs"];
-    });
-
-    const blogCreateLink = computed(() => {
-      return { name: "blogCreate" };
-    });
-
-    const pages = computed(() => {
-      return store.getters["blog/userPages"];
-    });
-
-    const blogIds = ref([]);
-    // toggle checkmark all data
+    const productIds = ref([]);
     const selectedAll = computed({
-      get: () => blogIds.value.length === userBlogs.value.length,
+      get: () => productIds.value.length === products.value.length,
       set: (value) => {
-        blogIds.value = [];
+        productIds.value = [];
         if (value) {
-          userBlogs.value.forEach((blog) => {
-            blogIds.value.push(blog.id);
+          products.value.data.forEach((product) => {
+            productIds.value.push(product.id);
           });
         }
       },
     });
-
     const confirmRemove = ref(false);
-    const confirmRemoveBlog = () => {
-      // toggle confirm modal
+    const toggleConfirmRemove = () => {
       confirmRemove.value = !confirmRemove.value;
     };
 
-    // remove blog processing
-    const removeBlog = async () => {
-      const blogData = {
+    const remove = async () => {
+      const data = {
         ids: {
-          val: blogIds.value,
+          val: productIds.value,
         },
       };
-
-      await useForm(blogData, "blog/removeBlog", options, false, true);
-
+      // errors(data);
+      await form.submit("product/removeProduct", data);
       confirmRemove.value = false;
-      // if success
-      if (options.done) {
-        blogIds.value = [];
-      }
     };
 
-    function paginator(queryParamPage) {
-      const userBlogsData = {
-        page: {
-          val: queryParamPage,
-        },
-      };
-      useForm(userBlogsData, "blog/getUserBlogs", options);
-    }
-
-    const { confirmErrors } = useErrors(null, options);
-
     return {
-      userBlogs,
-      hasUserBlogs,
-      blogCreateLink,
-      pages,
-      removeBlog,
-      options,
-      paginator,
-      confirmRemove,
-      confirmErrors,
-      confirmRemoveBlog,
-      blogIds,
+      products,
+      form,
       selectedAll,
+      productIds,
+      confirmRemove,
+      toggleConfirmRemove,
+      remove,
     };
   },
 };
 </script>
-
-<style scoped>
-.blog-list-enter-from {
-  opacity: 0.5;
-  transform: translateX(-60px);
-}
-
-.blog-list-enter-active {
-  transition: all 1s ease-out;
-}
-
-.blog-list-enter-to,
-.blog-list-leave-from {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.blog-list-leave-active {
-  transition: all 1s;
-}
-.blog-list-leave-to {
-  transform: translateX(30px);
-  opacity: 0;
-}
-
-th {
-  position: relative;
-}
-</style>

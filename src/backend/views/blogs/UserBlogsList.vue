@@ -90,8 +90,6 @@ export default {
       return store.getters["blog/userBlogs"];
     });
 
-    console.log(userBlogs.value, "userBlogs");
-
     const hasUserBlogs = computed(() => {
       return store.getters["blog/hasUserBlogs"];
     });

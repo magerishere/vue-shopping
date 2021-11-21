@@ -48,7 +48,12 @@ async function submitForm(
   if (!withoutLoading) {
     options.isLoading = false;
   }
-  return useErrors(data, options);
+  const { confirmError, confirmValidError } = useErrors(data, options);
+  return {
+    options,
+    confirmError,
+    confirmValidError,
+  };
 }
 
 export default submitForm;

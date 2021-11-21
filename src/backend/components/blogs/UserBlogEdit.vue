@@ -124,7 +124,6 @@ export default {
     });
 
     watch(blog, (b) => {
-      console.log(b.catNames);
       inputs.catNames.val = b.catNames;
       inputs.title.val = b.title;
       inputs.content.val = b.content;

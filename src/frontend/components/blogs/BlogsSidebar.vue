@@ -81,7 +81,6 @@ export default {
     });
 
     watch(filters, () => {
-      console.log("changed");
       applyFilters();
     });
 

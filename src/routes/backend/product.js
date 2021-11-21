@@ -16,4 +16,12 @@ export default [
       title: "ایجاد محصول",
     },
   },
+  {
+    name: "productEdit",
+    path: "product/:id/edit",
+    component: null,
+    meta: {
+      title: "ویرایش محصول",
+    },
+  },
 ];

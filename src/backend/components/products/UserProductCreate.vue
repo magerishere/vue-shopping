@@ -1,13 +1,13 @@
 <template>
   <div>
-    <base-dialog :show="options.isLoading" fixed title="در حال ثبت ...">
+    <base-dialog :show="form.config.isLoading" fixed title="در حال ثبت ...">
       <base-spinner></base-spinner>
     </base-dialog>
     <base-dialog
-      :show="!!options.errors"
+      :show="!!form.errors.messages"
       title="خطایی رخ داد."
-      :messages="options.errors"
-      @close="confirmErrors"
+      :messages="form.errors.messages"
+      @close="form.errors.confirm"
     >
     </base-dialog>
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
@@ -17,8 +17,8 @@
         v-model="inputs.catNames.val"
         :isValid="inputs.catNames.isValid"
         :errorMsg="inputs.catNames.validate.message"
+        :confirmErr="form.errors.confirmValid"
         :options="BASIC_DATA.productCatNames"
-        :confirmErr="confirmValidError"
       />
       <BaseInputText
         id="title"
@@ -26,7 +26,7 @@
         v-model.trim="inputs.title.val"
         :isValid="inputs.title.isValid"
         :errorMsg="inputs.title.validate.message"
-        :confirmErr="confirmValidError"
+        :confirmErr="form.errors.confirmValid"
       />
       <base-input-file
         id="image"
@@ -34,7 +34,7 @@
         @change="setImage"
         :isValid="inputs.image.isValid"
         :errorMsg="inputs.image.validate.message"
-        :confirmErr="confirmValidError"
+        :confirmErr="form.errors.confirmValid"
       >
         عکس <small>(حداکثر 1 مگابایت)</small>
       </base-input-file>
@@ -46,7 +46,7 @@
           v-model="inputs.amount.val"
           :isValid="inputs.amount.isValid"
           :errorMsg="inputs.amount.validate.message"
-          :confirmErr="confirmValidError"
+          :confirmErr="form.errors.confirmValid"
         >
           مبلغ هر واحد <small>(به تومان)</small>
         </base-input-number>
@@ -57,7 +57,7 @@
           v-model="inputs.qty.val"
           :isValid="inputs.qty.isValid"
           :errorMsg="inputs.qty.validate.message"
-          :confirmErr="confirmValidError"
+          :confirmErr="form.errors.confirmValid"
         >
           تعداد محصول <small>(در انبار)</small>
         </base-input-number>
@@ -70,7 +70,7 @@
           v-model="inputs.phone.val"
           :isValid="inputs.phone.isValid"
           :errorMsg="inputs.phone.validate.message"
-          :confirmErr="confirmValidError"
+          :confirmErr="form.errors.confirmValid"
         >
           شماره تلفن شرکت یا کارخانه <small>(8 رقم)</small>
         </base-input-number>
@@ -81,7 +81,7 @@
           v-model="inputs.city.val"
           :isValid="inputs.city.isValid"
           :errorMsg="inputs.city.validate.message"
-          :confirmErr="confirmValidError"
+          :confirmErr="form.errors.confirmValid"
           class="col-md-4"
         />
       </div>
@@ -91,7 +91,7 @@
         v-model="inputs.address.val"
         :isValid="inputs.address.isValid"
         :errorMsg="inputs.address.validate.message"
-        :confirmErr="confirmValidError"
+        :confirmErr="form.errors.confirmValid"
       />
       <BaseTextarea
         id="content"
@@ -99,7 +99,7 @@
         v-model.trim="inputs.content.val"
         :isValid="inputs.content.isValid"
         :errorMsg="inputs.content.validate.message"
-        :confirmErr="confirmValidError"
+        :confirmErr="form.errors.confirmValid"
       />
 
       <div class="text-center">
@@ -111,9 +111,7 @@
 
 <script>
 import { reactive } from "vue";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 export default {
   inject: {
     BASIC_DATA: {
@@ -204,18 +202,16 @@ export default {
       inputs.image.val = event.target.files[0];
       inputs.image.isFile = true;
     }
-
-    const options = useOptions();
-    const submitForm = () => useForm(inputs, "product/addProduct", options);
-    const { confirmErrors, confirmValidError } = useErrors(inputs, options);
+    const form = useForm();
+    const submitForm = () => {
+      form.submit("product/addProduct", inputs);
+    };
 
     return {
       inputs,
-      submitForm,
-      confirmValidError,
-      confirmErrors,
+      form,
       setImage,
-      options,
+      submitForm,
     };
   },
 };

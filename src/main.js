@@ -57,6 +57,10 @@ const BaseTextarea = defineAsyncComponent(() =>
   import("./components/ui/BaseTextarea.vue")
 );
 
+const BaseTable = defineAsyncComponent(() =>
+  import("./components/ui/BaseTable.vue")
+);
+
 const app = createApp(App);
 
 app.use(router);
@@ -78,6 +82,8 @@ app.component("BaseInputRadio", BaseInputRadio);
 app.component("BaseInputFile", BaseInputFile);
 app.component("BaseInputNumber", BaseInputNumber);
 // end inputs
+
+app.component("BaseTable", BaseTable);
 
 app.provide("StringFormat", StringFormat);
 app.provide("BASIC_DATA", BasicData);

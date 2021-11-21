@@ -11,10 +11,16 @@
             <div v-if="messages">
               <p v-for="message in messages" :key="message">{{ message }}</p>
             </div>
+            <p v-if="confirm" class="text-center">
+              آیا از انجام این کار مطمئن هستید؟
+            </p>
           </slot>
         </section>
         <menu class="actions" v-if="!fixed">
           <slot name="actions">
+            <base-button v-if="confirm" :mode="mode" @click="confirmed"
+              >تایید</base-button
+            >
             <base-button @click="close">بستن</base-button>
           </slot>
         </menu>
@@ -30,6 +36,10 @@ export default {
       type: Function,
       required: true,
     },
+    confirmed: {
+      type: Function,
+      required: true,
+    },
   },
   props: {
     show: {
@@ -37,6 +47,11 @@ export default {
       required: true,
     },
     fixed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    confirm: {
       type: Boolean,
       required: false,
       default: false,
@@ -63,7 +78,14 @@ export default {
       }
       context.emit("close");
     }
-    return { close };
+
+    function confirmed() {
+      if (!props.confirm) {
+        return;
+      }
+      context.emit("confirmed");
+    }
+    return { close, confirmed };
   },
 };
 </script>
@@ -106,6 +128,10 @@ header h1 {
 .actions {
   float: left;
   margin-left: 1rem;
+}
+
+.actions > * {
+  margin: 0 0.5rem;
 }
 
 .dialog-enter-from,

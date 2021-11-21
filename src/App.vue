@@ -35,7 +35,6 @@ export default {
     const toastStatus = computed(() => {
       return store.getters["getToastStatus"];
     });
-    console.log(toastStatus);
 
     return { toastStatus };
   },
@@ -119,5 +118,34 @@ ul {
 
 .row {
   width: 100%;
+}
+
+/* table transition */
+
+.table-list-enter-from {
+  opacity: 0.5;
+  transform: translateX(-60px);
+}
+
+.table-list-enter-active {
+  transition: all 1s ease-out;
+}
+
+.table-list-enter-to,
+.table-list-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.table-list-leave-active {
+  transition: all 1s;
+}
+.table-list-leave-to {
+  transform: translateX(30px);
+  opacity: 0;
+}
+
+th {
+  position: relative;
 }
 </style>
