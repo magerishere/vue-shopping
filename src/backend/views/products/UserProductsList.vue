@@ -20,7 +20,7 @@
       @click="toggleConfirmRemove"
       >حذف موارد انتخاب شده</base-button
     >
-    <base-table v-if="!form.config.isLoading">
+    <base-table v-if="hasUserProducts && !form.config.isLoading">
       <template #head>
         <tr>
           <th>
@@ -39,7 +39,7 @@
       </template>
       <template #default>
         <user-product-item
-          v-for="product in products.data"
+          v-for="product in userProducts.data"
           :key="product.id"
           :id="product.id"
           :image="product.image"
@@ -50,6 +50,15 @@
         ></user-product-item>
       </template>
     </base-table>
+    <base-pagination
+      v-if="hasUserProducts && !form.config.isLoading"
+      :pages="userProducts.links"
+      @paginator="paginator"
+    ></base-pagination>
+    <div v-if="!hasUserProducts && !form.config.isLoading" class="text-center">
+      <p>هنوز هیچ محصولی ندارید.</p>
+      <base-button link :to="productCreateLink">ایجاد محصول</base-button>
+    </div>
   </div>
 </template>
 
@@ -70,16 +79,22 @@ export default {
       await form.submit("product/getUserProducts");
     });
     const store = useStore();
-    const products = computed(() => {
+    const userProducts = computed(() => {
       return store.getters["product/userProducts"];
     });
+
+    const hasUserProducts = computed(() => {
+      return store.getters["product/hasUserProducts"];
+    });
+
+    const productCreateLink = { name: "productCreate" };
     const productIds = ref([]);
     const selectedAll = computed({
-      get: () => productIds.value.length === products.value.length,
+      get: () => productIds.value.length === userProducts.value.length,
       set: (value) => {
         productIds.value = [];
         if (value) {
-          products.value.data.forEach((product) => {
+          userProducts.value.data.forEach((product) => {
             productIds.value.push(product.id);
           });
         }
@@ -97,18 +112,29 @@ export default {
         },
       };
       // errors(data);
-      await form.submit("product/removeProduct", data);
+      await form.submit("product/removeProduct", data, false);
       confirmRemove.value = false;
     };
 
+    const paginator = async (queryParam) => {
+      const data = {
+        page: {
+          val: queryParam,
+        },
+      };
+      await form.submit("product/getUserProducts", data);
+    };
     return {
-      products,
+      userProducts,
+      hasUserProducts,
+      productCreateLink,
       form,
       selectedAll,
       productIds,
       confirmRemove,
       toggleConfirmRemove,
       remove,
+      paginator,
     };
   },
 };

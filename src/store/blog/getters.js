@@ -5,14 +5,6 @@ export default {
   hasBlogs(state) {
     return state.blogs.data && state.blogs.data.length > 0;
   },
-  // pages(state) {
-  //   //  if have no pages
-  //   if (state.blogs.to === state.blogs.total) {
-  //     return [];
-  //   }
-  //   const linksLength = state.blogs.links.length;
-  //   return state.blogs.links.slice(1, linksLength - 1);
-  // },
 
   blog(state) {
     return state.blog;

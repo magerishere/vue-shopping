@@ -1,9 +1,9 @@
 <template>
   <base-card>
     <base-dialog
-      :show="!!options.errors"
-      @close="confirmErrors"
-      :messages="options.errors"
+      :show="!!form.errors.messages"
+      @close="form.errors.confirm"
+      :messages="form.errors.messages"
     >
     </base-dialog>
     <div class="d-flex">
@@ -48,8 +48,7 @@
 
 <script>
 import { ref } from "vue";
-import useErrors from "@/hooks/errors";
-import useLikes from "@/hooks/likes";
+import useLikes from "@/hooks/useLikes";
 import CommentReplyCreate from "./replies/CommentReplyCreate.vue";
 import CommentRepliesList from "./replies/CommentRepliesList.vue";
 
@@ -89,18 +88,6 @@ export default {
     },
   },
   setup(props) {
-    const replyBox = ref(null);
-
-    function openReplyBox() {
-      replyBox.value = true;
-    }
-
-    const data = {
-      commentId: {
-        val: props.id,
-      },
-    };
-
     // likes
     const {
       likesCount,
@@ -111,18 +98,27 @@ export default {
       isDislike,
       dislike,
       dislikeIconClass,
-      options,
+      form,
     } = useLikes(props, data, "comment/likeComment", "comment/dislikeComment");
 
-    const { confirmErrors } = useErrors(null, options);
+    const replyBox = ref(null);
 
+    function openReplyBox() {
+      replyBox.value = true;
+      form.config.done = false;
+    }
+
+    const data = {
+      commentId: {
+        val: props.id,
+      },
+    };
     return {
       likesCount,
       like,
       isLike,
       likeIconClass,
-      confirmErrors,
-      options,
+      form,
       dislikesCount,
       dislike,
       isDislike,

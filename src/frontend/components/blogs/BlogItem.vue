@@ -8,7 +8,7 @@
       <div class="card-body">
         <h5 class="card-title">{{ title }}</h5>
         <p class="card-text">
-          {{ StringFormat(content, 100) }}
+          {{ stringFormat(content, 100) }}
         </p>
         <div class="float-start">
           <span><i class="fa fa-eye"></i>{{ views }}</span>
@@ -29,7 +29,7 @@
 export default {
   name: "BlogItem",
   inject: {
-    StringFormat: {
+    stringFormat: {
       // helper function
       type: Function,
       required: true,
@@ -105,24 +105,6 @@ li .card {
   left: 0;
   margin-left: 1rem;
   background-color: #000;
-}
-
-.blog-enter-from,
-.blog-leave-to {
-  opacity: 0;
-}
-
-.blog-enter-active {
-  transition: all 1s ease-out;
-}
-
-.blog-leave-active {
-  transition: all 1s ease-in;
-}
-
-.blog-enter-to,
-.blog-leave-from {
-  opacity: 1;
 }
 
 img {

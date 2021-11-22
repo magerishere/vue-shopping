@@ -1,50 +1,51 @@
 <template>
   <div>
-    <base-dialog :show="options.isLoading" fixed title="در حال ثبت ...">
+    <base-dialog :show="form.config.isLoading" fixed title="در حال ثبت ...">
       <base-spinner></base-spinner>
     </base-dialog>
     <base-dialog
-      :show="!!options.errors"
+      :show="!!form.errors.messages"
       title="خطایی رخ داد."
-      :messages="options.errors"
-      @close="confirmErrors"
+      :messages="form.errors.messages"
+      @close="form.errors.confirm"
     >
     </base-dialog>
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <BaseSelect
         id="catNames"
         v-model="inputs.catNames.val"
-        text="دسته بندی"
+        :text="inputs.catNames.text"
         :options="BASIC_DATA.blogCatNames"
         :isValid="inputs.catNames.isValid"
-        errorMsg="دسته بندی مطلب را انتخاب کنید"
-        :confirmErr="confirmValidError"
+        :errorMsg="inputs.catNames.validate.message"
+        :confirmErr="form.errors.confirmValid"
       />
       <BaseInputText
         id="title"
         v-model="inputs.title.val"
-        text="عنوان"
+        :text="inputs.title.text"
         :isValid="inputs.title.isValid"
-        errorMsg="عنوان مطلب را وارد کنید"
-        :confirmErr="confirmValidError"
+        :errorMsg="inputs.title.validate.message"
+        :confirmErr="form.errors.confirmValid"
       />
 
       <base-input-file
         id="image"
         @change="setImage"
+        :text="inputs.image.text"
         :isValid="inputs.image.isValid"
-        errorMsg="عکس مطلب را بارگذاری کنید"
-        :confirmErr="confirmValidError"
+        :errorMsg="inputs.image.validate.message"
+        :confirmErr="form.errors.confirmValid"
         >عکس <small>(حداکثر 1 مگابایت)</small></base-input-file
       >
 
       <BaseTextarea
         id="content"
-        text="محتوا"
+        :text="inputs.content.text"
         v-model="inputs.content.val"
         :isValid="inputs.content.isValid"
-        errorMsg="محتوای مطلب را وارد کنید"
-        :confirmErr="confirmValidError"
+        :errorMsg="inputs.content.validate.message"
+        :confirmErr="form.errors.confirmValid"
       />
 
       <div class="text-center">
@@ -56,9 +57,7 @@
 
 <script>
 import { reactive } from "vue";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 export default {
   inject: {
     BASIC_DATA: {
@@ -70,6 +69,7 @@ export default {
     const inputs = reactive({
       catNames: {
         val: [],
+        text: "دسته بندی",
         isValid: true,
         validate: {
           required: true,
@@ -77,13 +77,7 @@ export default {
       },
       title: {
         val: "",
-        isValid: true,
-        validate: {
-          required: true,
-        },
-      },
-      content: {
-        val: "",
+        text: "عنوان",
         isValid: true,
         validate: {
           required: true,
@@ -91,11 +85,21 @@ export default {
       },
       image: {
         val: null,
+        text: "عکس",
+
         isValid: true,
         validate: {
           required: true,
         },
         isFile: false,
+      },
+      content: {
+        val: "",
+        text: "محتوا",
+        isValid: true,
+        validate: {
+          required: true,
+        },
       },
     });
 
@@ -104,17 +108,15 @@ export default {
       inputs.image.isFile = true;
     }
 
-    const options = useOptions();
-    const submitForm = () => useForm(inputs, "blog/addBlog", options);
-    const { confirmErrors, confirmValidError } = useErrors(inputs, options);
+    const form = useForm();
+
+    const submitForm = () => form.submit("blog/addBlog", inputs);
 
     return {
       inputs,
       submitForm,
-      confirmValidError,
-      confirmErrors,
       setImage,
-      options,
+      form,
     };
   },
 };

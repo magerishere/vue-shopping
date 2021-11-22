@@ -1,36 +1,36 @@
 <template>
-  <base-dialog :show="!!options.errors" :messages="options.errors">
+  <base-dialog
+    :show="!!form.errors.messages"
+    :messages="form.errors.messages"
+    @close="form.errors.confirm"
+  >
   </base-dialog>
-  <base-spinner v-if="options.isLoading"></base-spinner>
-  <h6 v-if="options.done" class="text-success">
+  <base-spinner v-if="form.config.isLoading"></base-spinner>
+  <h6 v-if="form.config.done" class="text-success">
     پس از تایید ادمین،نمایش داده خواهد شد
   </h6>
 
-  <form @submit.prevent="sendReply" v-if="!options.isLoading && !options.done">
-    <div class="mb-3">
-      <label for="body" class="form-label">پاسخ شما</label>
-      <textarea
-        id="body"
-        cols="30"
-        rows="3"
-        class="form-control"
-        :class="{ error: !replyData.body.isValid }"
-        v-model.trim="replyData.body.val"
-        @blur="confirmValidError"
-      ></textarea>
-      <p class="form-text-error" v-if="!replyData.body.isValid">
-        نظر خود را بنویسید
-      </p>
-    </div>
+  <form
+    @submit.prevent="sendReply"
+    v-if="!form.config.isLoading && !form.config.done"
+  >
+    <BaseTextarea
+      id="body"
+      :text="inputs.body.text"
+      v-model.trim="inputs.body.val"
+      :isValid="inputs.body.isValid"
+      :errorMsg="inputs.body.validate.message"
+      :rows="3"
+      :confirmErr="form.errors.confirmValid"
+    />
+
     <base-button>ثبت</base-button>
   </form>
 </template>
 
 <script>
 import { reactive } from "vue";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 export default {
   props: {
     commentId: {
@@ -39,28 +39,30 @@ export default {
     },
   },
   setup(props) {
-    const replyData = reactive({
+    const inputs = reactive({
       commentId: {
         val: props.commentId,
       },
       body: {
         val: "",
+        text: "نظر",
         isValid: true,
         validate: {
           required: true,
         },
       },
     });
-    const options = useOptions();
-    const sendReply = () => useForm(replyData, "comment/addReply", options);
-    const { confirmErrors, confirmValidError } = useErrors(replyData, options);
+    const form = useForm();
+    const sendReply = () =>
+      form.submit("comment/addReply", inputs, {
+        withLoading: false,
+        done: true,
+      });
 
     return {
-      replyData,
-      options,
+      inputs,
       sendReply,
-      confirmErrors,
-      confirmValidError,
+      form,
     };
   },
 };

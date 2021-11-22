@@ -1,14 +1,14 @@
 <template>
   <div class="row">
-    <base-spinner v-if="options.isLoading"></base-spinner>
+    <base-spinner v-if="form.config.isLoading"></base-spinner>
     <base-dialog
-      :show="!!options.errors"
-      @close="confirmErrors"
-      :messages="options.errors"
+      :show="!!form.errors.messages"
+      @close="form.errors.confirm"
+      :messages="form.errors.messages"
     >
     </base-dialog>
     <blog-detail-sidebar
-      v-if="hasBlog && !options.isLoading"
+      v-if="hasBlog && !form.config.isLoading"
       :user="blog.user"
       :views="blog.views"
       :commentsCount="blog.comments.length"
@@ -17,7 +17,7 @@
     ></blog-detail-sidebar>
     <section class="col-md-9">
       <blog-detail-item
-        v-if="hasBlog && !options.isLoading"
+        v-if="hasBlog && !form.config.isLoading"
         :id="blog.id"
         :title="blog.title"
         :image="blog.image"
@@ -33,9 +33,7 @@
 <script>
 import { onMounted, computed, reactive } from "vue";
 import { useStore } from "vuex";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 import BlogDetailSidebar from "../../components/blogs/BlogDetailSidebar.vue";
 import BlogDetailItem from "../../components/blogs/BlogDetailItem.vue";
 export default {
@@ -52,16 +50,15 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    const form = useForm();
     const blogData = reactive({
       id: {
         val: props.id,
       },
     });
-    const options = useOptions();
     onMounted(async () => {
-      await useForm(blogData, "blog/getBlog", options);
+      await form.submit("blog/getBlog", blogData);
     });
-    const { confirmErrors } = useErrors(blogData, options);
     const blog = computed(function () {
       return store.getters["blog/blog"];
     });
@@ -70,7 +67,7 @@ export default {
       return store.getters["blog/hasBlog"];
     });
 
-    return { blog, hasBlog, options, confirmErrors };
+    return { blog, hasBlog, form };
   },
 };
 </script>

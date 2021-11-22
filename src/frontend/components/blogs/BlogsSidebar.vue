@@ -33,26 +33,6 @@
                   :text="sort[1]"
                 />
               </li>
-              <li v-for="sortBy in BASIC_DATA.sortsBy" :key="sortBy[0]">
-                <BaseInputRadio
-                  :id="sortBy[0]"
-                  name="sorts"
-                  v-model="filters.sort.val"
-                  :text="sortBy[1]"
-                />
-              </li>
-
-              <li
-                v-for="sortByCount in BASIC_DATA.sortsByCount"
-                :key="sortByCount[0]"
-              >
-                <BaseInputRadio
-                  :id="sortByCount[0]"
-                  name="sorts"
-                  v-model="filters.sort.val"
-                  :text="sortByCount[1]"
-                />
-              </li>
             </ul>
           </li>
         </ul>

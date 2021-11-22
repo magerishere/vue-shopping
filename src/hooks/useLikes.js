@@ -1,11 +1,10 @@
 import { ref, onMounted, computed } from "vue";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
+import useForm from "@/hooks/form/useForm";
 
 // likes
 function likesAndDislikes(props, data, likeDispatch, dislikeDispatch) {
   const userId = localStorage.getItem("userId");
-  const options = useOptions();
+  const form = useForm();
   const likesCount = ref(props.likes.length);
   const isLike = ref(null);
   onMounted(() => {
@@ -13,7 +12,7 @@ function likesAndDislikes(props, data, likeDispatch, dislikeDispatch) {
   });
 
   const like = () => {
-    useForm(data, likeDispatch, options);
+    form.submit(likeDispatch, data, { withLoading: false });
     if (isLike.value) {
       likesCount.value--;
     } else {
@@ -37,7 +36,7 @@ function likesAndDislikes(props, data, likeDispatch, dislikeDispatch) {
       props.dislikes.findIndex((like) => like.user_id == userId) >= 0;
   });
   const dislike = () => {
-    useForm(data, dislikeDispatch, options);
+    form.submit(dislikeDispatch, data, { withLoading: false });
     if (isDislike.value) {
       dislikesCount.value--;
     } else {
@@ -62,7 +61,7 @@ function likesAndDislikes(props, data, likeDispatch, dislikeDispatch) {
     isDislike,
     dislike,
     dislikeIconClass,
-    options,
+    form,
   };
 }
 

@@ -94,6 +94,13 @@ a.router-link-active {
   color: #fff;
 }
 
+button:disabled {
+  color: #6c757d;
+  pointer-events: none;
+  background-color: #fff;
+  border-color: #dee2e6;
+}
+
 .flat {
   border-radius: 0;
 }

@@ -33,10 +33,10 @@ export default {
     localStorage.setItem("userId", responseData.userId);
     localStorage.setItem("userRole", responseData.userRole);
     localStorage.setItem("token", responseData.token);
+
     context.commit("setUser", responseData);
-    Api.defaults.headers.common["Authorization"] =
-      "Bearer " + responseData.token;
-    router.replace("/dashboard");
+    window.location = "/dashboard";
+    // router.replace("/dashboard");
   },
   tryLogin(context) {
     // data

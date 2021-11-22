@@ -19,9 +19,11 @@ export default [
   {
     name: "productEdit",
     path: "product/:id/edit",
-    component: null,
+    component: () =>
+      import("@/backend/components/products/UserProductEdit.vue"),
     meta: {
       title: "ویرایش محصول",
     },
+    props: (route) => ({ id: Number(route.params.id) }),
   },
 ];

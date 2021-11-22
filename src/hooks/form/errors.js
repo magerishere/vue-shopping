@@ -7,7 +7,7 @@ const useErrors = () => {
     confirm: () => (errors.messages = null),
     data: null,
     confirmValid: (event) => {
-      if (errors.data) {
+      if (errors.data && errors.data[event.target.id]) {
         errors.data[event.target.id].isValid = true;
       }
     },

@@ -1,7 +1,11 @@
 import { reactive } from "vue";
 
-const config = reactive({
-  isLoading: false,
-});
+const useConfig = () => {
+  const config = reactive({
+    isLoading: false,
+    withLoading: true,
+  });
+  return config;
+};
 
-export default config;
+export default useConfig;

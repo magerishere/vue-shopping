@@ -31,7 +31,6 @@ export default {
       data: payload,
       url: "/blogs",
       state: "blog/userBlogs",
-      commit: "blog/setUserBlogs",
     };
     return context.dispatch("delete", data, { root: true });
   },

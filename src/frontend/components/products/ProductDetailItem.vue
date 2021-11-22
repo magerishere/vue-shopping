@@ -32,7 +32,7 @@
       <comments-list :comments="comments"></comments-list>
       <h6>نظر شما درباره این مطلب چیست؟</h6>
 
-      <comment-create v-if="isAuth" type="Blog" :id="id"></comment-create>
+      <comment-create v-if="isAuth" :blogId="id"></comment-create>
 
       <h6 v-else class="text-center">
         برای نظردادن ابتدا وارد اکانت خود شوید

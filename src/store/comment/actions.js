@@ -1,11 +1,12 @@
 import Api from "@/Api";
 export default {
   async addComment(context, payload) {
-    const commentData = payload;
-    const response = await Api.post("/comment", commentData);
-    const responseData = response.data;
-    context.dispatch("errorsHandler", responseData, { root: true });
-    context.commit("setToastStatus", "success", { root: true });
+    const data = {
+      url: "/comment",
+      data: payload,
+      success: true,
+    };
+    return context.dispatch("post", data, { root: true });
   },
   async likeComment(context, payload) {
     const commentId = payload.get("commentId");

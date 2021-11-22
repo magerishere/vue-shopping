@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import useLikes from "@/hooks/likes";
+import useLikes from "@/hooks/useLikes";
 export default {
   props: {
     id: {

@@ -1,28 +1,26 @@
 <template>
   <div>
-    <base-spinner v-if="options.isLoading"></base-spinner>
-    <base-dialog :show="!!options.errors" @close="confirmErrors">
-      <p v-for="error in options.errors" :key="error">{{ error }}</p>
+    <base-spinner v-if="form.config.isLoading"></base-spinner>
+    <base-dialog :show="!!form.errors.messages" @close="form.errors.confirm">
+      <p v-for="error in form.errors.messages" :key="error">{{ error }}</p>
     </base-dialog>
     <base-dialog
       :show="confirmRemove"
       title="هشدار"
+      @close="toggleConfirmRemove"
       mode="danger"
-      @close="confirmRemoveBlog(null)"
+      confirm
+      @confirmed="remove"
     >
-      <p class="text-center">آیا از انجام این کار مطمئن هستید؟</p>
-      <template #actions>
-        <base-button @click="removeBlog" mode="danger">حذف</base-button>
-      </template>
     </base-dialog>
     <base-button
       v-if="blogIds.length > 0"
       mode="danger small"
-      @click="confirmRemoveBlog(null, false)"
+      @click="toggleConfirmRemove"
       >حذف موارد انتخاب شده</base-button
     >
-    <table class="table mt-3" v-if="hasUserBlogs && !options.isLoading">
-      <thead>
+    <base-table v-if="hasUserBlogs && !form.config.isLoading">
+      <template #head>
         <tr>
           <th>
             <BaseInputCheckbox
@@ -38,8 +36,8 @@
           <th>محتوا</th>
           <th>عملیات</th>
         </tr>
-      </thead>
-      <transition-group appear tag="tbody" name="blog-list">
+      </template>
+      <template #default>
         <user-blog-item
           v-for="blog in userBlogs.data"
           :key="blog.id"
@@ -50,26 +48,25 @@
           :content="blog.content"
           v-model="blogIds"
         ></user-blog-item>
-      </transition-group>
-    </table>
-    <div v-if="!hasUserBlogs && !options.isLoading" class="text-center">
-      <p>هنوز هیچ پستی ندارید.</p>
-      <base-button link :to="blogCreateLink">ایجاد پست</base-button>
-    </div>
+      </template>
+    </base-table>
     <base-pagination
-      v-if="hasUserBlogs && !options.isLoading"
+      v-if="hasUserBlogs && !form.config.isLoading"
       :pages="userBlogs.links"
       @paginator="paginator"
     ></base-pagination>
+
+    <div v-if="!hasUserBlogs && !form.config.isLoading" class="text-center">
+      <p>هنوز هیچ پستی ندارید.</p>
+      <base-button link :to="blogCreateLink">ایجاد پست</base-button>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 import UserBlogItem from "../../components/blogs/UserBlogItem.vue";
 export default {
   name: "UserBlogsList",
@@ -80,10 +77,10 @@ export default {
 
   setup() {
     const store = useStore();
-    const options = useOptions();
+    const form = useForm();
 
     onMounted(async () => {
-      await useForm(null, "blog/getUserBlogs", options);
+      await form.submit("blog/getUserBlogs");
     });
 
     const userBlogs = computed(() => {
@@ -113,81 +110,45 @@ export default {
     });
 
     const confirmRemove = ref(false);
-    const confirmRemoveBlog = () => {
+    const toggleConfirmRemove = () => {
       // toggle confirm modal
       confirmRemove.value = !confirmRemove.value;
     };
 
     // remove blog processing
-    const removeBlog = async () => {
-      const blogData = {
+    const remove = async () => {
+      const data = {
         ids: {
           val: blogIds.value,
         },
       };
 
-      await useForm(blogData, "blog/removeBlog", options, false, true);
+      await form.submit("blog/removeBlog", data, false);
 
       confirmRemove.value = false;
-      // if success
-      if (options.done) {
-        blogIds.value = [];
-      }
     };
 
-    function paginator(queryParamPage) {
-      const userBlogsData = {
+    const paginator = async (queryParamPage) => {
+      const data = {
         page: {
           val: queryParamPage,
         },
       };
-      useForm(userBlogsData, "blog/getBlogs", options);
-    }
-
-    const { confirmErrors } = useErrors(null, options);
+      await form.submit("blog/getUserBlogs", data);
+    };
 
     return {
       userBlogs,
       hasUserBlogs,
       blogCreateLink,
-      removeBlog,
-      options,
       paginator,
+      remove,
+      toggleConfirmRemove,
       confirmRemove,
-      confirmErrors,
-      confirmRemoveBlog,
       blogIds,
       selectedAll,
+      form,
     };
   },
 };
 </script>
-
-<style scoped>
-.blog-list-enter-from {
-  opacity: 0.5;
-  transform: translateX(-60px);
-}
-
-.blog-list-enter-active {
-  transition: all 1s ease-out;
-}
-
-.blog-list-enter-to,
-.blog-list-leave-from {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.blog-list-leave-active {
-  transition: all 1s;
-}
-.blog-list-leave-to {
-  transform: translateX(30px);
-  opacity: 0;
-}
-
-th {
-  position: relative;
-}
-</style>

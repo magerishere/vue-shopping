@@ -1,13 +1,17 @@
 <template>
   <div>
-    <base-dialog :show="options.isLoading" fixed title="در حال وارد شدن ...">
+    <base-dialog
+      :show="form.config.isLoading"
+      fixed
+      title="در حال وارد شدن ..."
+    >
       <base-spinner></base-spinner>
     </base-dialog>
     <base-dialog
-      :show="!!options.errors"
+      :show="!!form.errors.messages"
       title="خطایی رخ داد."
-      :messages="options.errors"
-      @close="confirmErrors"
+      :messages="form.errors.messages"
+      @close="form.errors.confirm"
     >
     </base-dialog>
     <form @submit.prevent="submitForm">
@@ -17,7 +21,7 @@
         v-model.trim="inputs.email.val"
         :isValid="inputs.email.isValid"
         :errorMsg="inputs.email.validate.message"
-        :confirmErr="confirmValidError"
+        :confirmErr="form.errors.confirmValid"
       />
       <BaseInputPassword
         id="password"
@@ -25,7 +29,7 @@
         v-model.trim="inputs.password.val"
         :isValid="inputs.password.isValid"
         :errorMsg="inputs.password.validate.message"
-        :confirmErr="confirmValidError"
+        :confirmErr="form.errors.confirmValid"
       />
 
       <div class="actions">
@@ -37,9 +41,7 @@
 
 <script>
 import { reactive } from "vue";
-import useOptions from "@/hooks/options";
-import useForm from "@/hooks/form";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 
 export default {
   name: "UserLogin",
@@ -64,16 +66,14 @@ export default {
       },
     });
 
-    const options = useOptions();
-    const submitForm = () => useForm(inputs, "auth/login", options);
-    const { confirmErrors, confirmValidError } = useErrors(inputs, options);
+    const form = useForm();
+
+    const submitForm = () => form.submit("auth/login", inputs);
 
     return {
       inputs,
-      options,
       submitForm,
-      confirmValidError,
-      confirmErrors,
+      form,
     };
   },
 };

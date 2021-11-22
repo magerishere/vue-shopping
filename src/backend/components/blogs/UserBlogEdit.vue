@@ -1,13 +1,13 @@
 <template>
   <div>
-    <base-dialog :show="options.isLoading" fixed title="در حال ثبت ...">
+    <base-dialog :show="form.config.isLoading" fixed title="در حال ثبت ...">
       <base-spinner></base-spinner>
     </base-dialog>
     <base-dialog
-      :show="!!options.errors"
+      :show="!!form.errors.messages"
       title="خطایی رخ داد."
-      :messages="options.errors"
-      @close="confirmErrors"
+      :messages="form.errors.messages"
+      @close="form.errors.confirm"
     >
     </base-dialog>
     <img :src="inputs.image.oldVal" alt="Blog Image" loading="lazy" />
@@ -15,37 +15,38 @@
       <BaseSelect
         id="catNames"
         v-model="inputs.catNames.val"
-        text="دسته بندی"
+        :text="inputs.catNames.text"
         :options="BASIC_DATA.blogCatNames"
         :isValid="inputs.catNames.isValid"
-        errorMsg="دسته بندی مطلب را انتخاب کنید"
-        :confirmErr="confirmValidError"
+        :errorMsg="inputs.catNames.validate.message"
+        :confirmErr="form.errors.confirmValid"
       />
       <BaseInputText
         id="title"
         v-model.trim="inputs.title.val"
-        text="عنوان"
+        :text="inputs.title.text"
         :isValid="inputs.title.isValid"
-        errorMsg="عنوان مطلب را وارد کنید"
-        :confirmErr="confirmValidError"
+        :errorMsg="inputs.title.validate.message"
+        :confirmErr="form.errors.confirmValid"
       />
 
       <base-input-file
         id="image"
         @change="setImage"
+        :text="inputs.image.text"
         :isValid="inputs.image.isValid"
-        errorMsg="عکس مطلب را بارگذاری کنید"
-        :confirmErr="confirmValidError"
+        :errorMsg="inputs.image.validate.message"
+        :confirmErr="form.errors.confirmValid"
         >عکس <small>(حداکثر 1 مگابایت)</small></base-input-file
       >
 
       <BaseTextarea
         id="content"
-        text="محتوا"
+        :text="inputs.content.text"
         v-model.trim="inputs.content.val"
         :isValid="inputs.content.isValid"
-        errorMsg="محتوای مطلب را وارد کنید"
-        :confirmErr="confirmValidError"
+        :errorMsg="inputs.content.validate.message"
+        :confirmErr="form.errors.confirmValid"
       />
       <div class="text-center">
         <base-button>به روزرسانی</base-button>
@@ -55,16 +56,18 @@
 </template>
 
 <script>
-import { reactive, onMounted, computed, watch } from "vue";
+import { reactive, onMounted, computed, watch, inject } from "vue";
 import { useStore } from "vuex";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 
 export default {
   inject: {
     BASIC_DATA: {
       type: JSON,
+      required: true,
+    },
+    setInitialData: {
+      type: Function,
       required: true,
     },
   },
@@ -74,16 +77,14 @@ export default {
       required: true,
     },
   },
-
   setup(props) {
-    const store = useStore();
-
     const inputs = reactive({
       id: {
-        val: props.id,
+        val: "",
       },
       catNames: {
         val: "",
+        text: "دسته بندی",
         isValid: true,
         validate: {
           required: true,
@@ -91,13 +92,7 @@ export default {
       },
       title: {
         val: "",
-        isValid: true,
-        validate: {
-          required: true,
-        },
-      },
-      content: {
-        val: "",
+        text: "عنوان",
         isValid: true,
         validate: {
           required: true,
@@ -106,28 +101,39 @@ export default {
       image: {
         oldVal: "",
         val: "",
+        text: "عکس",
         isValid: true,
-        isFile: false,
+        isFile: true,
+        validate: {
+          required: false,
+        },
+      },
+      content: {
+        val: "",
+        text: "محتوا",
+        isValid: true,
+        validate: {
+          required: true,
+        },
       },
     });
 
-    const options = useOptions();
+    const store = useStore();
+    const form = useForm();
     const blogId = reactive({
       id: { val: props.id },
     });
     onMounted(async () => {
-      await useForm(blogId, "blog/getUserBlog", options);
+      await form.submit("blog/getUserBlog", blogId);
     });
 
     const blog = computed(() => {
       return store.getters["blog/userBlog"];
     });
 
+    const setInitialData = inject("setInitialData");
     watch(blog, (b) => {
-      inputs.catNames.val = b.catNames;
-      inputs.title.val = b.title;
-      inputs.content.val = b.content;
-      inputs.image.oldVal = b.image;
+      setInitialData(b, inputs);
     });
 
     function setImage(event) {
@@ -136,17 +142,14 @@ export default {
     }
 
     const submitForm = () => {
-      useForm(inputs, "blog/editBlog", options);
+      form.submit("blog/editBlog", inputs);
     };
-    const { confirmErrors, confirmValidError } = useErrors(inputs, options);
 
     return {
       inputs,
       submitForm,
-      confirmValidError,
-      confirmErrors,
       setImage,
-      options,
+      form,
     };
   },
 };

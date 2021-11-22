@@ -1,12 +1,12 @@
 <template>
   <div class="row">
-    <base-dialog :show="options.isLoading" fixed>
+    <base-dialog :show="form.config.isLoading" fixed>
       <base-spinner></base-spinner>
     </base-dialog>
     <base-dialog
-      :show="!!options.errors"
-      :messages="options.errors"
-      @close="confirmErrors"
+      :show="!!form.errors.messages"
+      :messages="form.errors.messages"
+      @close="form.errors.confirm"
     >
     </base-dialog>
     <user-dashboard-sidebar></user-dashboard-sidebar>
@@ -33,9 +33,7 @@
 import { computed } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 import UserDashboardSidebar from "../../components/dashboard/UserDashboardSidebar.vue";
 export default {
   name: "UserDashboard",
@@ -48,9 +46,8 @@ export default {
     const isAuth = computed(function () {
       return store.getters["auth/isAuth"];
     });
-    const options = useOptions();
-    const logout = () => useForm(null, "auth/logout", options);
-    const { confirmErrors } = useErrors(null, options);
+    const form = useForm();
+    const logout = () => form.submit("auth/logout");
 
     const cardTitle = computed(function () {
       return route.meta.title;
@@ -59,8 +56,7 @@ export default {
       isAuth,
       logout,
       cardTitle,
-      options,
-      confirmErrors,
+      form,
     };
   },
 };

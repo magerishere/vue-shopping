@@ -10,11 +10,12 @@
       @close="form.errors.confirm"
     >
     </base-dialog>
+    <img :src="inputs.image.oldVal" alt="Blog Image" loading="lazy" />
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <BaseSelect
         id="catNames"
-        :text="inputs.catNames.text"
         v-model="inputs.catNames.val"
+        :text="inputs.catNames.text"
         :isValid="inputs.catNames.isValid"
         :errorMsg="inputs.catNames.validate.message"
         :confirmErr="form.errors.confirmValid"
@@ -110,17 +111,33 @@
 </template>
 
 <script>
-import { reactive } from "vue";
+import { reactive, onMounted, computed, watch, inject } from "vue";
+import { useStore } from "vuex";
 import useForm from "@/hooks/form/useForm";
+
 export default {
   inject: {
     BASIC_DATA: {
       type: JSON,
       required: true,
     },
+    setInitialData: {
+      type: Function,
+      required: true,
+    },
   },
-  setup() {
+  props: {
+    id: {
+      type: Number,
+      required: true,
+    },
+  },
+
+  setup(props) {
     const inputs = reactive({
+      id: {
+        val: "",
+      },
       catNames: {
         val: "",
         text: "دسته بندی",
@@ -138,13 +155,12 @@ export default {
         },
       },
       image: {
+        oldVal: "",
         val: null,
         text: "عکس",
         isValid: true,
-        validate: {
-          required: true,
-        },
-        isFile: false,
+        validate: {},
+        isFile: true,
       },
       amount: {
         val: null,
@@ -198,20 +214,37 @@ export default {
       },
     });
 
+    const store = useStore();
+    const form = useForm();
+    const productId = reactive({
+      id: { val: props.id },
+    });
+    onMounted(async () => {
+      await form.submit("product/getUserProduct", productId);
+    });
+
+    const product = computed(() => {
+      return store.getters["product/userProduct"];
+    });
+    const setInitialData = inject("setInitialData");
+    watch(product, (p) => {
+      setInitialData(p, inputs);
+    });
+
     function setImage(event) {
       inputs.image.val = event.target.files[0];
       inputs.image.isFile = true;
     }
-    const form = useForm();
+
     const submitForm = () => {
-      form.submit("product/addProduct", inputs);
+      form.submit("product/editProduct", inputs);
     };
 
     return {
       inputs,
-      form,
-      setImage,
       submitForm,
+      setImage,
+      form,
     };
   },
 };
@@ -220,5 +253,9 @@ export default {
 <style scoped>
 .actions {
   text-align: center;
+}
+img {
+  width: 40px;
+  height: 40px;
 }
 </style>

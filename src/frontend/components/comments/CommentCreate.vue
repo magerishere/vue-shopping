@@ -1,72 +1,77 @@
 <template>
-  <base-spinner v-if="options.isLoading"></base-spinner>
+  <base-spinner v-if="form.config.isLoading"></base-spinner>
   <base-dialog
-    :show="!!options.errors"
-    @close="confirmErrors"
-    :messages="options.errors"
+    :show="!!form.errors.messages"
+    @close="form.errors.confirm"
+    :messages="form.errors.messages"
   >
   </base-dialog>
-  <h6 v-if="options.done" class="text-success">
+  <h6 v-if="form.config.done" class="text-success">
     پس از تایید ادمین،نمایش داده خواهد شد
   </h6>
   <form
     @submit.prevent="submitForm"
-    v-if="!options.isLoading && !!!options.errors && !options.done"
+    v-if="
+      !form.config.isLoading && !!!form.errors.messages && !form.config.done
+    "
   >
-    <div class="mb-3">
-      <textarea
-        id="body"
-        cols="30"
-        rows="6"
-        class="form-control"
-        :class="{ error: !inputs.body.isValid }"
-        v-model.trim="inputs.body.val"
-        @blur="confirmValidError"
-      ></textarea>
-      <p v-if="!inputs.body.isValid" class="form-text-error">
-        نظر خودرا وارد کنید
-      </p>
-    </div>
+    <BaseTextarea
+      id="body"
+      :text="inputs.body.text"
+      v-model.trim="inputs.body.val"
+      :isValid="inputs.body.isValid"
+      :errorMsg="inputs.body.validate.message"
+      :confirmErr="form.errors.confirmValid"
+    />
+
     <base-button>ثبت</base-button>
   </form>
 </template>
 
 <script>
 import { reactive } from "vue";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 
 export default {
   props: {
-    blogId: {
+    id: {
       type: Number,
+      required: true,
+    },
+    type: {
+      type: String,
       required: true,
     },
   },
   setup(props) {
     const inputs = reactive({
-      blogId: {
-        val: props.blogId,
+      commentableType: {
+        val: props.type,
       },
+      commentableId: {
+        val: props.id,
+      },
+
       body: {
         val: "",
+        text: "نظر",
         isValid: true,
         validate: {
           required: true,
         },
       },
     });
-    const options = useOptions();
-    const submitForm = () => useForm(inputs, "comment/addComment", options);
-    const { confirmErrors, confirmValidError } = useErrors(inputs, options);
+    const form = useForm();
+    const submitForm = () =>
+      form.submit("comment/addComment", inputs, {
+        withLoading: false,
+        done: true,
+      });
 
     return {
       inputs,
-      options,
       submitForm,
-      confirmErrors,
-      confirmValidError,
+      form,
     };
   },
 };

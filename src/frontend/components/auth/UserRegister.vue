@@ -1,13 +1,13 @@
 <template>
   <div>
-    <base-dialog :show="options.isLoading" fixed title="در حال ثبت نام ...">
+    <base-dialog :show="form.config.isLoading" fixed title="در حال ثبت نام ...">
       <base-spinner></base-spinner>
     </base-dialog>
     <base-dialog
-      :show="!!options.errors"
+      :show="!!form.errors.messages"
       title="خطایی رخ داد."
-      :messages="options.errors"
-      @close="confirmErrors"
+      :messages="form.errors.messages"
+      @close="form.errors.confirm"
     >
     </base-dialog>
     <form @submit.prevent="submitForm">
@@ -17,7 +17,7 @@
         v-model.trim="inputs.userName.val"
         :isValid="inputs.userName.isValid"
         :errorMsg="inputs.userName.validate.message"
-        :confirmErr="confirmValidError"
+        :confirmErr="form.errors.confirm"
       />
       <BaseInputText
         :text="inputs.email.text"
@@ -25,7 +25,7 @@
         v-model.trim="inputs.email.val"
         :isValid="inputs.email.isValid"
         :errorMsg="inputs.email.validate.message"
-        :confirmErr="confirmValidError"
+        :confirmErr="form.errors.confirm"
         placeholder="ما ایمیل شمارا محفوظ نگه میداریم"
       />
       <BaseInputPassword
@@ -34,7 +34,7 @@
         v-model.trim="inputs.password.val"
         :isValid="inputs.password.isValid"
         :errorMsg="inputs.password.validate.message"
-        :confirmErr="confirmValidError"
+        :confirmErr="form.errors.confirm"
       />
       <BaseInputCheckbox
         id="role"
@@ -52,9 +52,7 @@
 
 <script>
 import { reactive } from "vue";
-import useForm from "@/hooks/form";
-import useErrors from "@/hooks/errors";
-import useOptions from "@/hooks/options";
+import useForm from "@/hooks/form/useForm";
 
 export default {
   name: "UserRegister",
@@ -92,19 +90,13 @@ export default {
         text: "من فروشنده هستم",
       },
     });
-    // form options
-    const options = useOptions();
-    // submit form
-    const submitForm = () => useForm(inputs, "auth/register", options);
-    // error handler after submit form
-    const { confirmErrors, confirmValidError } = useErrors(inputs, options);
+    const form = useForm();
+    const submitForm = () => form.submit("auth/register", inputs);
 
     return {
       inputs,
-      options,
       submitForm,
-      confirmValidError,
-      confirmErrors,
+      form,
     };
   },
 };

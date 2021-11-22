@@ -3,20 +3,20 @@
     <div class="row">
       <blogs-sidebar @apply-filters="applyFilters"></blogs-sidebar>
       <base-dialog
-        :show="!!options.errors"
+        :show="!!form.errors.messages"
         title="خطایی رخ داد"
-        :messages="options.errors"
-        @close="confirmErrors"
+        :messages="form.errors.messages"
+        @close="form.errors.confirm"
       >
       </base-dialog>
-      <base-spinner v-if="options.isLoading"></base-spinner>
+      <base-spinner v-if="form.config.isLoading"></base-spinner>
 
       <section class="col-md-9">
         <transition-group
           appear
           tag="ul"
           name="blog-list"
-          v-if="hasBlogs && !options.isLoading"
+          v-if="hasBlogs && !form.config.isLoading"
           class="row mx-1"
         >
           <blog-item
@@ -35,7 +35,10 @@
           </blog-item>
         </transition-group>
 
-        <div class="text-center mt-5" v-if="!hasBlogs && !options.isLoading">
+        <div
+          class="text-center mt-5"
+          v-if="!hasBlogs && !form.config.isLoading"
+        >
           <h4 class="mb-5">
             هیچ مطلبی وجود ندارد. شما اولین پست را ایجاد کنید
           </h4>
@@ -45,7 +48,7 @@
           <base-button v-else link to="/auth">ورود / ثبت نام</base-button>
         </div>
         <base-pagination
-          v-if="hasBlogs && !options.isLoading"
+          v-if="hasBlogs && !form.config.isLoading"
           :pages="blogs.links"
           @paginator="paginator"
         ></base-pagination>
@@ -57,9 +60,7 @@
 <script>
 import { onMounted, computed } from "vue";
 import { useStore } from "vuex";
-import useForm from "@/hooks/form";
-import useOptions from "@/hooks/options";
-import useErrors from "@/hooks/errors";
+import useForm from "@/hooks/form/useForm";
 import BlogItem from "../../components/blogs/BlogItem.vue";
 import BlogsSidebar from "../../components/blogs/BlogsSidebar.vue";
 export default {
@@ -80,10 +81,10 @@ export default {
   },
   setup() {
     const store = useStore();
-    const options = useOptions();
+    const form = useForm();
 
     onMounted(async () => {
-      await useForm(null, "blog/getBlogs", options);
+      await form.submit("blog/getBlogs");
     });
     const blogs = computed(() => {
       return store.getters["blog/blogs"];
@@ -99,7 +100,7 @@ export default {
 
     // emits
     function applyFilters(filters) {
-      useForm(filters, "blog/setFilters", options, true);
+      form.submit("blog/setFilters", filters);
     }
 
     function paginator(queryParamPage) {
@@ -108,19 +109,16 @@ export default {
           val: queryParamPage,
         },
       };
-
-      useForm(blogsData, "blog/getBlogs", options);
+      form.submit("blog/getBlogs", blogsData);
     }
 
-    const { confirmErrors } = useErrors(null, options);
     return {
       blogs,
       hasBlogs,
-      confirmErrors,
-      options,
       isAuth,
       applyFilters,
       paginator,
+      form,
     };
   },
 };

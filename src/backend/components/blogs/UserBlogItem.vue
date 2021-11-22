@@ -8,7 +8,7 @@
     <td><img :src="image" alt="Blog Image" loading="lazy" /></td>
     <td>{{ catName }}</td>
     <td>{{ title }}</td>
-    <td>{{ StringFormat(content, 30) }}</td>
+    <td>{{ stringFormat(content, 30) }}</td>
     <td class="actions">
       <base-button link :to="editBlogLink" mode="small">مشاهده</base-button>
     </td>
@@ -20,7 +20,7 @@ import { computed } from "vue";
 export default {
   emits: ["update:modelValue"],
   inject: {
-    StringFormat: {
+    stringFormat: {
       // helper function
       type: Function,
       required: true,

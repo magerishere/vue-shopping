@@ -6,7 +6,9 @@ export default {
   namespaced: true,
   state() {
     return {
+      products: [],
       userProducts: [],
+      userProudct: null,
     };
   },
   mutations,

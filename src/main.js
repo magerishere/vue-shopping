@@ -4,8 +4,9 @@ import store from "./store/index";
 import App from "./App.vue";
 import BaseCard from "./components/ui/BaseCard.vue";
 import BaseButton from "./components/ui/BaseButton.vue";
-import StringFormat from "./helpers/StringFormat";
 import BasicData from "./basic-data.json";
+import stringFormat from "./helpers/stringFormat";
+import setInitialData from "./helpers/setInitialData";
 
 const BaseDialog = defineAsyncComponent(() =>
   import("./components/ui/BaseDialog.vue")
@@ -85,7 +86,8 @@ app.component("BaseInputNumber", BaseInputNumber);
 
 app.component("BaseTable", BaseTable);
 
-app.provide("StringFormat", StringFormat);
 app.provide("BASIC_DATA", BasicData);
+app.provide("stringFormat", stringFormat);
+app.provide("setInitialData", setInitialData);
 
 app.mount("#app");

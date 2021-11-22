@@ -34,6 +34,7 @@ const store = createStore({
       // action
       const url = payload.url;
       const response = await Api.get(url);
+      console.log(response);
       const responseData = response.data;
       // error handling
       context.dispatch("errorsHandler", responseData);
@@ -46,6 +47,7 @@ const store = createStore({
      * @var url
      * @var redirect optional
      * @var commit optional
+     * @var success optional
      */
     async post(context, payload) {
       // action
@@ -94,7 +96,6 @@ const store = createStore({
      * @var url
      * @var redirect
      * @var state
-     * @var commit
      */
     async delete(context, payload) {
       // action
@@ -106,17 +107,15 @@ const store = createStore({
       // error handling
       context.dispatch("errorsHandler", responseData);
       // success - remove items from main data
-      console.log(data.get("ids"), "after deleting");
       const ids = JSON.parse(data.get("ids"));
       const state = payload.state;
-      const items = context.getters[state];
+      const items = context.getters[state].data;
       for (let i = 0; i < ids.length; i++) {
-        const indexOfItem = items.data.findIndex((blog) => blog.id == ids[i]);
-        items.data.splice(indexOfItem, 1);
+        const indexOfItem = items.findIndex((blog) => blog.id == ids[i]);
+        items.splice(indexOfItem, 1);
       }
       // commit
-      const commit = payload.commit;
-      context.commit(commit, items);
+      context.commit("setToastStatus", "success");
     },
 
     errorsHandler(_, payload) {
