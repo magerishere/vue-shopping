@@ -76,12 +76,7 @@ export default {
       dislike,
       dislikeIconClass,
       options,
-    } = useLikes(
-      props,
-      replyData,
-      "comment/likeCommentReply",
-      "comment/dislikeCommentReply"
-    );
+    } = useLikes(props, replyData);
 
     return {
       likesCount,

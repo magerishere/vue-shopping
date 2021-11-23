@@ -6,7 +6,7 @@
     :messages="form.errors.messages"
   >
   </base-dialog>
-  <h6 v-if="form.config.done" class="text-success">
+  <h6 v-if="form.config.done && !form.config.isLoading" class="text-success">
     پس از تایید ادمین،نمایش داده خواهد شد
   </h6>
   <form

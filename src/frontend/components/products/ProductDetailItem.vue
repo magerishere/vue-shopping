@@ -32,7 +32,7 @@
       <comments-list :comments="comments"></comments-list>
       <h6>نظر شما درباره این مطلب چیست؟</h6>
 
-      <comment-create v-if="isAuth" :blogId="id"></comment-create>
+      <comment-create v-if="isAuth" type="Product" :id="id"></comment-create>
 
       <h6 v-else class="text-center">
         برای نظردادن ابتدا وارد اکانت خود شوید
@@ -86,7 +86,10 @@ export default {
   },
   setup(props) {
     const data = {
-      blogId: {
+      likeableType: {
+        val: "Product",
+      },
+      likeableId: {
         val: props.id,
       },
     };
@@ -100,7 +103,7 @@ export default {
       dislike,
       dislikeIconClass,
       form,
-    } = useLikes(props, data, "blog/likeBlog", "blog/dislikeBlog");
+    } = useLikes(props, data);
 
     const store = useStore();
     const isAuth = computed(() => {

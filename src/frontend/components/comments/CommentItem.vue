@@ -99,7 +99,7 @@ export default {
       dislike,
       dislikeIconClass,
       form,
-    } = useLikes(props, data, "comment/likeComment", "comment/dislikeComment");
+    } = useLikes(props, data);
 
     const replyBox = ref(null);
 

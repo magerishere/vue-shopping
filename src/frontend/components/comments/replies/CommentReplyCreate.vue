@@ -6,7 +6,7 @@
   >
   </base-dialog>
   <base-spinner v-if="form.config.isLoading"></base-spinner>
-  <h6 v-if="form.config.done" class="text-success">
+  <h6 v-if="form.config.done && !form.config.isLoading" class="text-success">
     پس از تایید ادمین،نمایش داده خواهد شد
   </h6>
 

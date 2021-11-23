@@ -4,6 +4,7 @@ import productModule from "./product/index";
 import blogModule from "./blog/index";
 import userModule from "./user/index";
 import commentModule from "./comment/index";
+import likeModule from "./like/index";
 import Api from "@/Api";
 import router from "@/router";
 
@@ -14,6 +15,7 @@ const store = createStore({
     blog: blogModule,
     user: userModule,
     comment: commentModule,
+    like: likeModule,
   },
   state() {
     return {
@@ -120,6 +122,7 @@ const store = createStore({
 
     errorsHandler(_, payload) {
       const responseData = payload;
+      console.log(responseData);
       // errors
       if (responseData.status !== 200) {
         const errors = new Error(responseData.messages);

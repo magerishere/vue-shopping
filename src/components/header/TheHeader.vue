@@ -2,15 +2,22 @@
   <header>
     <nav class="container">
       <ul>
-        <li><base-button link to="/products">محصولات</base-button></li>
-        <li><base-button link to="/blogs">بلاگ</base-button></li>
-        <div v-if="isAuth" class="float-end">
+        <li>
+          <base-button link :to="{ name: 'products' }">محصولات</base-button>
+        </li>
+        <li><base-button link :to="{ name: 'blogs' }">بلاگ</base-button></li>
+        <div class="float-end">
           <li>
-            <base-button link to="/dashboard">داشبورد</base-button>
+            <base-button link :to="{ name: 'userCart' }"
+              ><i class="fa fa-cart-plus" aria-hidden="true"></i
+            ></base-button>
           </li>
-        </div>
-        <div v-else class="float-end">
-          <li><base-button link to="/auth">ورود</base-button></li>
+          <li v-if="isAuth">
+            <base-button link :to="{ name: 'dashboard' }">داشبورد</base-button>
+          </li>
+          <li v-else>
+            <base-button link :to="{ name: 'login' }">ورود</base-button>
+          </li>
         </div>
       </ul>
     </nav>

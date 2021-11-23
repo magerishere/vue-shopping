@@ -71,15 +71,9 @@ a.router-link-active {
 }
 
 .small {
-  background-color: #fff;
-  color: darkviolet;
-  padding: 0.3rem;
+  padding: 0.3rem 0.5rem;
   font-size: 1rem;
-}
-
-.small:hover {
-  background-color: darkviolet;
-  color: #fff;
+  border-radius: 6px;
 }
 
 .page {
@@ -113,5 +107,15 @@ button:disabled {
 .danger:hover {
   background: #fff;
   color: darkred;
+}
+
+.danger-outline {
+  border-color: darkred;
+  background-color: #fff;
+  color: darkred;
+}
+.danger-outline:hover {
+  background: darkred;
+  color: #fff;
 }
 </style>

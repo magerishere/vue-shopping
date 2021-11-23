@@ -86,7 +86,10 @@ export default {
   },
   setup(props) {
     const data = {
-      blogId: {
+      likeableType: {
+        val: "Blog",
+      },
+      likeableId: {
         val: props.id,
       },
     };
@@ -100,7 +103,7 @@ export default {
       dislike,
       dislikeIconClass,
       form,
-    } = useLikes(props, data, "blog/likeBlog", "blog/dislikeBlog");
+    } = useLikes(props, data);
 
     const store = useStore();
     const isAuth = computed(() => {

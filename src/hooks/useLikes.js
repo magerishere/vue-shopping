@@ -2,7 +2,7 @@ import { ref, onMounted, computed } from "vue";
 import useForm from "@/hooks/form/useForm";
 
 // likes
-function likesAndDislikes(props, data, likeDispatch, dislikeDispatch) {
+function likesAndDislikes(props, data) {
   const userId = localStorage.getItem("userId");
   const form = useForm();
   const likesCount = ref(props.likes.length);
@@ -12,7 +12,7 @@ function likesAndDislikes(props, data, likeDispatch, dislikeDispatch) {
   });
 
   const like = () => {
-    form.submit(likeDispatch, data, { withLoading: false });
+    form.submit("like/like", data, { withLoading: false });
     if (isLike.value) {
       likesCount.value--;
     } else {
@@ -36,7 +36,7 @@ function likesAndDislikes(props, data, likeDispatch, dislikeDispatch) {
       props.dislikes.findIndex((like) => like.user_id == userId) >= 0;
   });
   const dislike = () => {
-    form.submit(dislikeDispatch, data, { withLoading: false });
+    form.submit("like/dislike", data, { withLoading: false });
     if (isDislike.value) {
       dislikesCount.value--;
     } else {

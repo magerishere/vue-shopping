@@ -39,22 +39,22 @@
         عکس <small>(حداکثر 1 مگابایت)</small>
       </base-input-file>
       <div class="row">
-        <base-input-number
+        <base-input-text
           id="amount"
           :text="inputs.amount.text"
           class="col-md-3"
-          v-model="inputs.amount.val"
+          v-model.number="inputs.amount.val"
           :isValid="inputs.amount.isValid"
           :errorMsg="inputs.amount.validate.message"
           :confirmErr="form.errors.confirmValid"
         >
           مبلغ هر واحد <small>(به تومان)</small>
-        </base-input-number>
+        </base-input-text>
         <base-input-number
           id="qty"
           :text="inputs.qty.text"
           class="col-md-3"
-          v-model="inputs.qty.val"
+          v-model.number="inputs.qty.val"
           :isValid="inputs.qty.isValid"
           :errorMsg="inputs.qty.validate.message"
           :confirmErr="form.errors.confirmValid"
@@ -63,17 +63,18 @@
         </base-input-number>
       </div>
       <div class="row">
-        <base-input-number
+        <base-input-text
           id="phone"
           :text="inputs.phone.text"
           class="col-md-5"
-          v-model="inputs.phone.val"
+          v-model.number="inputs.phone.val"
           :isValid="inputs.phone.isValid"
           :errorMsg="inputs.phone.validate.message"
           :confirmErr="form.errors.confirmValid"
+          mode="ltr"
         >
           شماره تلفن شرکت یا کارخانه <small>(8 رقم)</small>
-        </base-input-number>
+        </base-input-text>
         <BaseSelect
           id="city"
           :text="inputs.city.text"
@@ -152,6 +153,7 @@ export default {
         isValid: true,
         validate: {
           required: true,
+          number: true,
         },
       },
       qty: {
@@ -160,6 +162,7 @@ export default {
         isValid: true,
         validate: {
           required: true,
+          number: true,
           max: 4,
         },
       },
@@ -169,6 +172,7 @@ export default {
         isValid: true,
         validate: {
           required: true,
+          number: true,
           equal: 8,
         },
       },

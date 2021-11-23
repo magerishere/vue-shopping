@@ -8,7 +8,7 @@
       :id="id"
       v-model.trim="model"
       class="form-control"
-      :class="{ error: !isValid }"
+      :class="classes"
       @blur="confirmErr"
     />
     <div v-if="!isValid" class="form-text-error">
@@ -48,6 +48,13 @@ export default {
       type: Function,
       required: true,
     },
+    mode: {
+      type: String,
+      required: false,
+      validator: (value) => {
+        return ["rtl", "ltr"].includes(value);
+      },
+    },
   },
   computed: {
     model: {
@@ -58,6 +65,17 @@ export default {
         this.$emit("update:modelValue", value);
       },
     },
+    classes: {
+      get() {
+        return { error: !this.isValid, ltr: this.mode === "ltr" };
+      },
+    },
   },
 };
 </script>
+
+<style scoped>
+.ltr {
+  direction: ltr;
+}
+</style>
