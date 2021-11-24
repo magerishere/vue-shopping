@@ -3,7 +3,9 @@ import axios from "axios";
 const token = localStorage.getItem("token");
 
 const Api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api",
+  // baseURL: "http://127.0.0.1:8000/api", // local url
+  baseURL: "https://laravel.mehdi-khoshkar.ir/public/api", // production url
+
   headers: {
     // Accept: "application/json",
     Authorization: "Bearer " + token,

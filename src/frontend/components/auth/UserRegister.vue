@@ -17,7 +17,7 @@
         v-model.trim="inputs.userName.val"
         :isValid="inputs.userName.isValid"
         :errorMsg="inputs.userName.validate.message"
-        :confirmErr="form.errors.confirm"
+        :confirmErr="form.errors.confirmValid"
       />
       <BaseInputText
         :text="inputs.email.text"
@@ -25,7 +25,7 @@
         v-model.trim="inputs.email.val"
         :isValid="inputs.email.isValid"
         :errorMsg="inputs.email.validate.message"
-        :confirmErr="form.errors.confirm"
+        :confirmErr="form.errors.confirmValid"
         placeholder="ما ایمیل شمارا محفوظ نگه میداریم"
       />
       <BaseInputPassword
@@ -34,7 +34,7 @@
         v-model.trim="inputs.password.val"
         :isValid="inputs.password.isValid"
         :errorMsg="inputs.password.validate.message"
-        :confirmErr="form.errors.confirm"
+        :confirmErr="form.errors.confirmValid"
       />
       <BaseInputCheckbox
         id="role"

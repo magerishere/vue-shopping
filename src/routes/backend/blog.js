@@ -6,6 +6,7 @@ export default [
       import("@/backend/components/dashboard/UserDashboardContent.vue"),
     meta: {
       title: "داشبورد",
+      auth: true,
     },
   },
   {

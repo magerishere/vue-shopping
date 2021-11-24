@@ -10,7 +10,7 @@
         <p class="card-text">
           {{ stringFormat(content, 100) }}
         </p>
-        <div class="float-start">
+        <div>
           <span><i class="fa fa-eye"></i>{{ views }}</span>
           <span><i class="fa fa-thumbs-up"></i>{{ likes }}</span>
           <span><i class="fa fa-comments"></i>{{ comments }}</span>
